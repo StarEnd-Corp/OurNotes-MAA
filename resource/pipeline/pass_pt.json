@@ -113,7 +113,7 @@
             60
         ],
         "action": "DoNothing",
-        "max_hit": 4,
+        "max_hit": 12,
         "next": [
             "PassClaimDaily",
             "PassTabNormal",
@@ -132,7 +132,7 @@
             535
         ],
         "action": "Click",
-        "max_hit": 8,
+        "max_hit": 16,
         "next": [
             "PassDailyOK",
             "PassTabNormal",
@@ -254,7 +254,7 @@
             420
         ],
         "action": "Click",
-        "max_hit": 8,
+        "max_hit": 12,
         "next": [
             "PassLevelOK",
             "PassClickTaskBtn"
@@ -273,7 +273,7 @@
             420
         ],
         "action": "Click",
-        "max_hit": 10,
+        "max_hit": 20,
         "next": [
             "PassDailyOK",
             "PassOnTasks"
@@ -293,7 +293,7 @@
         ],
         "threshold": 0.8,
         "action": "DoNothing",
-        "max_hit": 2,
+        "max_hit": 3,
         "next": [
             "PassStart"
         ],
@@ -321,7 +321,7 @@
             133,
             193
         ],
-        "max_hit": 3,
+        "max_hit": 6,
         "next": [
             "PassOnTasks"
         ],
