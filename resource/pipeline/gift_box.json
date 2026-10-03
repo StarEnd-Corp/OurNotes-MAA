@@ -55,9 +55,28 @@
         ],
         "action": "DoNothing",
         "next": [
-            "GiftClaim"
+            "GiftNoGift"
         ],
         "timeout": 8000
+    },
+    "GiftNoGift": {
+        "description": "【礼物盒·门禁】页面上「一键领取」按钮一直都在（无可领时是灰色），只认按钮会永远命中、把收尾出路堵死。先认页面文案「暂无可领取的礼物。」：命中 → 直接走 GiftClose 收尾；没有这句话 → 说明有可领项，去点 GiftClaim。",
+        "recognition": "OCR",
+        "expected": "暂无可领取",
+        "roi": [
+            600,
+            280,
+            500,
+            160
+        ],
+        "action": "DoNothing",
+        "next": [
+            "GiftClose"
+        ],
+        "on_error": [
+            "GiftClaim"
+        ],
+        "timeout": 3000
     },
     "GiftClaim": {
         "description": "礼物盒页「一键领取」（一次通常领完列表全部，实测 9 件一次清空）。max_hit=3 允许重试几次；按钮灰掉时点击无效、无害。识别不到 → 关闭收尾。",
