@@ -750,12 +750,12 @@
         "timeout": 3000
     },
     "FLSkipTierPick": {
-        "description": "【跳过·选档】在「确认跳过」面板里选择 LIVE BOOST 消耗档位。档位行（720p）：3火(637,126) / 2火(637,181) / 1火(637,237) / 0火(637,293)；「全部消耗」行(644,366，每日 1 次)。默认 target 指向「全部消耗」；GUI 的「消耗档位」下拉会用 pipeline_override 覆盖 target。",
+        "description": "【跳过·选档】在「确认跳过」面板里选择 LIVE BOOST 消耗档位。⚠️默认档位（全消耗）要**勾左边的复选框**，不是点「全部消耗」文字：档位行（720p）：3火(637,126) / 2火(637,181) / 1火(637,237) / 0火(637,293)；「全部消耗」行(644,366，每日 1 次)。默认 target 指向「全部消耗」；GUI 的「消耗档位」下拉会用 pipeline_override 覆盖 target。",
         "recognition": "DirectHit",
         "action": "Click",
         "target": [
-            644,
-            366
+            315,
+            438
         ],
         "next": [
             "FLClickSkipConfirm"
