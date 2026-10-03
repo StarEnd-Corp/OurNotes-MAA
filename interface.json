@@ -28,8 +28,8 @@
     "resource": [
         {
             "name": "Official",
-            "label": "官服资源",
-            "description": "OUR NOTES 官服/全球服资源包",
+            "label": "国际服",
+            "description": "OUR NOTES 国际服资源包",
             "path": [
                 "resource"
             ]
