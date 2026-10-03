@@ -44,6 +44,9 @@
             70
         ],
         "action": "DoNothing",
+        "on_error": [
+            "PassClickTaskBtn"
+        ],
         "next": [
             "PassClaimTopLitGate"
         ],
@@ -223,6 +226,9 @@
             110
         ],
         "action": "Click",
+        "on_error": [
+            "PassClickHome"
+        ],
         "next": [
             "PassClaimTopLitGate2"
         ],

@@ -54,6 +54,9 @@
             70
         ],
         "action": "DoNothing",
+        "on_error": [
+            "GiftClose"
+        ],
         "next": [
             "GiftClaimLitGate"
         ],
