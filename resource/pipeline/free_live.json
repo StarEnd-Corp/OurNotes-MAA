@@ -450,7 +450,7 @@
         ],
         "action": "Click",
         "next": [
-            "FLSkipTierPick",
+            "FLSkipAllGate",
             "FLClickSkipConfirm"
         ],
         "timeout": 15000,
@@ -767,6 +767,26 @@
             "FLRankUp",
             "FLClickHomeEnd"
         ],
+        "timeout": 3000
+    },
+    "FLSkipAllGate": {
+        "description": "【全消耗门禁·跳过路】点「跳过」打开面板后，先 OCR 看「全部消耗」那行还有没有次数（「今日剩余N次」/「全部消耗剩余N次」，N>0）。有 → 去勾复选框；没有（「今日次数已用完。0」，每日仅 1 次，23:00 重置）→ 不勾，直接点面板里的「跳过」。避免去点一个已失效的复选框。",
+        "recognition": "OCR",
+        "expected": "全部消耗剩余[1-9]|今日剩余[1-9]",
+        "roi": [560, 370, 300, 90],
+        "action": "DoNothing",
+        "next": ["FLSkipTierPick"],
+        "on_error": ["FLClickSkipConfirm"],
+        "timeout": 3000
+    },
+    "FLBAllGate": {
+        "description": "【全消耗门禁·消耗LB路】由「消耗LB」打开同一个面板时同样先确认还有没有全消耗次数。有 → 勾复选框；没有 → 直接点 OK（保持当前档位）。",
+        "recognition": "OCR",
+        "expected": "全部消耗剩余[1-9]|今日剩余[1-9]",
+        "roi": [560, 370, 300, 90],
+        "action": "DoNothing",
+        "next": ["FLBSelectAll"],
+        "on_error": ["FLBOK"],
         "timeout": 3000
     },
     "FLSkipTierPick": {
