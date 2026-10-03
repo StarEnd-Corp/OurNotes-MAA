@@ -125,6 +125,23 @@ CLEAN_INSTANCE = {
 }
 
 
+
+# 发行包预置的全局配置（GUI 更新设置）
+# 说明：EnableAutoUpdateResource 保持 false —— 资源包是全量的（含 MaaFramework/MFAAvalonia/adb，
+# 130MB+），静默自动下载体验太差，改为「检查到新版本后提示用户」。
+# 想改成静默自动更新，把 EnableAutoUpdateResource 设为 True 即可。
+CLEAN_GLOBAL_CONFIG = {
+    "CurrentLanguage": "zh-CN",
+    "ColorTheme": "Blue",
+    "BaseTheme": "Light",
+    "ResourceUpdateChannelInitialized": True,
+    "EnableCheckVersion": True,
+    "EnableAutoUpdateResource": False,
+    "ResourceUpdateChannelIndex": 2,
+    "DownloadSourceIndex": 0,
+    "EnableAutoUpdateMFA": False,
+    "UIUpdateChannelIndex": 2,
+}
 def find_rcedit(work):
     """找 rcedit；本地没有就从官方 Releases 下一个（只有 1.3MB）"""
     for c in (os.path.join(ROOT, "tools", "rcedit-x64.exe"),
@@ -254,10 +271,15 @@ def build(out_dir):
             "    ADB_ADDR: '127.0.0.1:16384',\n"
             "};\n")
     os.makedirs(os.path.join(stage, "config", "instances"), exist_ok=True)
+    # 全局配置：预置更新设置（GitHub 源 / Stable 渠道 / 不静默自动更新）
+    with open(os.path.join(stage, "config", "config.json"), "w",
+              encoding="utf-8", newline="\n") as f:
+        json.dump(CLEAN_GLOBAL_CONFIG, f, ensure_ascii=False, indent=2)
     with open(os.path.join(stage, "config", "instances", "default.json"), "w",
               encoding="utf-8", newline="\n") as f:
         json.dump(CLEAN_INSTANCE, f, ensure_ascii=False, indent=2)
     print("      + tools/config.local.js（adb 指向包内）")
+    print("      + config/config.json（预置更新设置）")
     print("      + config/instances/default.json（不含打包者路径，保留 MuMu 修复值）")
 
     # 三方许可
