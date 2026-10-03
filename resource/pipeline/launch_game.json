@@ -12,6 +12,7 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
+            "LaunchRewardOK",
             "LaunchHome",
             "LaunchBootWait"
         ],
@@ -37,9 +38,9 @@
         "post_delay": 3000
     },
     "LaunchSkipLoginBonus": {
-        "description": "登录奖励等全屏弹窗：点击右上角 SKIP（实测多个弹窗此按钮位置样式一致）。",
-        "recognition": "TemplateMatch",
-        "template": "skip_btn.png",
+        "description": "登录奖励等全屏弹窗：点击右上角 SKIP。【2026-10-03 改 OCR】原来用模板 skip_btn.png，实测节点命中、也点了，但画面没变化（登录奖励界面还停在原地）；改成 OCR 认「SKIP/跳过」文字后，点同一位置即可正常跳过 → 领取结果 → 剧情 TOUCH → 回主界面。",
+        "recognition": "OCR",
+        "expected": "SKIP|skip|Skip|跳过|スキップ",
         "roi": [
             1115,
             5,
@@ -142,6 +143,23 @@
         "timeout": 8000,
         "post_delay": 2500
     },
+    "LaunchRewardOK": {
+        "description": "【获得奖励弹窗】登录奖励/剧情推进后弹出的「获得奖励 … 已获得 xxx」→ 点下方 OK 关掉。【2026-10-03 补】日期变更后实测流程会经过它（OK 在 1080p (961,988)），缺这个节点会一直卡住直到超时。",
+        "recognition": "OCR",
+        "expected": "OK|Ok|0K|确定",
+        "roi": [
+            540,
+            610,
+            200,
+            100
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 8000,
+        "post_delay": 2000
+    },
     "LaunchNoticeClose": {
         "description": "【2026-10-02 补】公告页左下「关闭」→ 回启动流程。（实测冷启动会依次遇到 登录奖励剧情 → 公告页）",
         "recognition": "OCR",
@@ -184,6 +202,7 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
+            "LaunchRewardOK",
             "LaunchHome",
             "LaunchBootWait"
         ],
