@@ -5,10 +5,10 @@
 <h1 align="center">OUR NOTES 挂机助手</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/StarEnd-Corp/OurNotes-MAA?label=Stars" alt="Stars">
-  <img src="https://img.shields.io/github/commit-activity/m/StarEnd-Corp/OurNotes-MAA?label=Commit%20Activity" alt="Commit Activity">
-  <img src="https://img.shields.io/github/last-commit/StarEnd-Corp/OurNotes-MAA?label=Last%20Commit" alt="Last Commit">
-  <img src="https://img.shields.io/github/license/StarEnd-Corp/OurNotes-MAA?label=License" alt="License">
+  <img src="https://img.shields.io/github/stars/StarEnden/OurNotes-MAA?label=Stars" alt="Stars">
+  <img src="https://img.shields.io/github/commit-activity/m/StarEnden/OurNotes-MAA?label=Commit%20Activity" alt="Commit Activity">
+  <img src="https://img.shields.io/github/last-commit/StarEnden/OurNotes-MAA?label=Last%20Commit" alt="Last Commit">
+  <img src="https://img.shields.io/github/license/StarEnden/OurNotes-MAA?label=License" alt="License">
 </p>
 
 《BanG Dream! Our Notes》的自动化助手，基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework)。

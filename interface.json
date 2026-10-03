@@ -9,7 +9,7 @@
     "version": "0.1.0",
 
     // ↓↓↓ 资源更新/检查用：github = 海外源地址，资源检查工具会读这里取最新版本号
-    "github": "https://github.com/StarEnd-Corp/OurNotes-MAA1",
+    "github": "https://github.com/StarEnden/OurNotes-MAA",
     "contact": "CONTACT",
     "license": "LICENSE",
     "description": "针对《BanG Dream! Our Notes》的挂机流程骨架：自动进入歌曲并挂机到结算后重复。识别词与素材需按实际游戏界面调整，详见 README.md",
