@@ -265,7 +265,7 @@
         ],
         "action": "Click",
         "next": [
-            "FLBClickLB"
+            "FLTeamLoop"
         ],
         "timeout": 12000,
         "post_delay": 4000
