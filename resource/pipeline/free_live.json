@@ -377,10 +377,27 @@
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            "FLBLowStaminaClose"
+        ],
+        "timeout": 3000
+    },
+    "FLBLowStaminaClose": {
+        "description": "【火不够·收尾第一步】此时 LB消耗面板还开着，点面板底部的 OK 把它关掉（只是确认档位，不消耗火）→ 再走收尾回主页。之前直接回主页会卡住：FLClickHomeEnd 找的主页按钮被面板挡住。",
+        "recognition": "OCR",
+        "expected": "OK|Ok|0K",
+        "roi": [
+            560,
+            630,
+            170,
+            70
+        ],
+        "action": "Click",
+        "next": [
             "FLRankUp",
             "FLClickHomeEnd"
         ],
-        "timeout": 3000
+        "timeout": 3000,
+        "post_delay": 1200
     },
     "FLBSelectAll": {
         "description": "勾选「全部消耗」（最多 10 点、每日 1 次）—— 勾选项「使用全消耗」= 是 时走这里。",
