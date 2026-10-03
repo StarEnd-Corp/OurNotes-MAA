@@ -160,7 +160,7 @@
             "default_case": "全消耗+最高火",
             "description": "跳过演出时，在「确认跳过」面板里选择的 LIVE BOOST 消耗档位（也就是「火」）。全消耗+最高火 = 点面板上的「全部消耗」（消耗演出开始时持有的全部，每日 1 次，用掉后当日不可选）；3/2/1/0 火 = 对应固定档位（0 火 = 完全不消耗）。",
             "cases": [
-                { "name": "全消耗+最高火", "label": "🔥MAX（全消耗+最高火）", "pipeline_override": { "FLSkipTierPick": { "target": [644, 366] } } },
+                { "name": "全消耗+最高火", "label": "🔥MAX（全消耗+最高火）", "pipeline_override": { "FLSkipTierPick": { "target": [315, 438] } } },
                 { "name": "3火", "label": "🔥3（3火）", "pipeline_override": { "FLSkipTierPick": { "target": [637, 126] } } },
                 { "name": "2火", "label": "🔥2（2火）", "pipeline_override": { "FLSkipTierPick": { "target": [637, 181] } } },
                 { "name": "1火", "label": "🔥1（1火）", "pipeline_override": { "FLSkipTierPick": { "target": [637, 237] } } },
