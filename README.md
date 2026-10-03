@@ -5,19 +5,10 @@
 <h1 align="center">OUR NOTES 挂机助手</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-Windows-0078D4" alt="平台">
-  <img src="https://img.shields.io/badge/Python-3.7%2B-3776AB" alt="Python">
-  <img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-brightgreen" alt="许可">
-  <img src="https://img.shields.io/badge/MaaFramework-v5.14.2-2ea44f" alt="MaaFramework">
-  <img src="https://img.shields.io/badge/MFAAvalonia-v2.16.2-2ea44f" alt="MFAAvalonia">
-  <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-v0.1.0-blue" alt="版本">
-  <br>
-  <!-- 下面这几项是 shields.io 的动态徽章：仓库处于「私有」状态时取不到数据，
-       显示为 repo not found；等仓库设为公开后会自动显示真实数值，无需改动 -->
-  <img src="https://img.shields.io/github/downloads/StarEnd-Corp/OurNotes-MAA/total" alt="下载量">
-  <img src="https://img.shields.io/github/stars/StarEnd-Corp/OurNotes-MAA" alt="Star">
-  <img src="https://img.shields.io/github/commit-activity/m/StarEnd-Corp/OurNotes-MAA" alt="提交活跃度">
-  <img src="https://img.shields.io/github/last-commit/StarEnd-Corp/OurNotes-MAA" alt="最后提交">
+  <img src="https://img.shields.io/github/stars/StarEnd-Corp/OurNotes-MAA?label=Stars" alt="Stars">
+  <img src="https://img.shields.io/github/commit-activity/m/StarEnd-Corp/OurNotes-MAA?label=Commit%20Activity" alt="Commit Activity">
+  <img src="https://img.shields.io/github/last-commit/StarEnd-Corp/OurNotes-MAA?label=Last%20Commit" alt="Last Commit">
+  <img src="https://img.shields.io/github/license/StarEnd-Corp/OurNotes-MAA?label=License" alt="License">
 </p>
 
 《BanG Dream! Our Notes》的自动化助手，基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework)。
