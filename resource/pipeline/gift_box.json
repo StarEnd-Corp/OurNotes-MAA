@@ -55,26 +55,25 @@
         ],
         "action": "DoNothing",
         "next": [
-            "GiftNoGift"
+            "GiftClaimLitGate"
         ],
         "timeout": 8000
     },
-    "GiftNoGift": {
-        "description": "【礼物盒·门禁】页面上「一键领取」按钮一直都在（无可领时是灰色），只认按钮会永远命中、把收尾出路堵死。先认页面文案「暂无可领取的礼物。」：命中 → 直接走 GiftClose 收尾；没有这句话 → 说明有可领项，去点 GiftClaim。",
-        "recognition": "OCR",
-        "expected": "暂无可领取",
-        "roi": [
-            600,
-            280,
-            500,
-            160
-        ],
+
+    "GiftClaimLitGate": {
+        "description": "【礼物盒·亮色门禁】同通行证：没有文字判据，只有「一键领取」按钮亮不亮。ColorMatch(HSV) 只框那个按钮，灰态 0 像素、亮态模板 11981 像素。命中=有礼物可领 → GiftClaim；没命中 → 直接 GiftClose 收尾。",
+        "recognition": "ColorMatch",
+        "method": 40,
+        "lower": [95, 60, 200],
+        "upper": [125, 215, 255],
+        "count": 300,
+        "roi": [690, 620, 200, 60],
         "action": "DoNothing",
         "next": [
-            "GiftClose"
+            "GiftClaim"
         ],
         "on_error": [
-            "GiftClaim"
+            "GiftClose"
         ],
         "timeout": 3000
     },

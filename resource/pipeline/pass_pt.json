@@ -103,6 +103,23 @@
         "timeout": 15000,
         "post_delay": 3000
     },
+    "PassClaimLitGate": {
+        "description": "【通行证·亮色门禁】页面没有任何标志性文字，唯一差别是「领取/一键领取」按钮**亮不亮**。用 ColorMatch(HSV) 只框底部「一键领取」按钮：亮态 V≈235、灰态 V≈116，实测灰态页面命中 0 像素、亮态模板命中 11981 像素 → 取 count=300 极安全。命中=有可领 → PassClaimDaily；没命中 → 先去切「常规」页（可领项可能只在那页）。",
+        "recognition": "ColorMatch",
+        "method": 40,
+        "lower": [95, 60, 200],
+        "upper": [125, 215, 255],
+        "count": 300,
+        "roi": [690, 620, 200, 60],
+        "action": "DoNothing",
+        "next": [
+            "PassClaimDaily"
+        ],
+        "on_error": [
+            "PassTabNormal"
+        ],
+        "timeout": 3000
+    },
     "PassOnTasks": {
         "description": "【通行证任务页】OCR 认「达成情况」→ 去领。next 三条正路：①有可领 → PassClaimDaily；②本页领不到 → 切「常规」页 PassTabNormal；③都领完 → PassDailyClose 收尾。",
         "recognition": "OCR",
@@ -116,8 +133,7 @@
         "action": "DoNothing",
         "max_hit": 12,
         "next": [
-            "PassClaimDaily",
-            "PassTabNormal",
+            "PassClaimLitGate",
             "PassDailyClose"
         ],
         "timeout": 8000
@@ -136,8 +152,7 @@
         "max_hit": 16,
         "next": [
             "PassDailyOK",
-            "PassTabNormal",
-            "PassDailyClose"
+            "PassOnTasks"
         ],
         "timeout": 6000,
         "post_delay": 2000
@@ -324,8 +339,9 @@
         ],
         "max_hit": 1,
         "next": [
-            "PassOnTasks"
-        ],
+                "PassClaimLitGate",
+                "PassDailyClose"
+            ],
         "post_delay": 2500,
         "timeout": 3000
     }
