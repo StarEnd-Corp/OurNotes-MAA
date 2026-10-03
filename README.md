@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" width="128" alt="OurNotes MAA">
+  <img src="logo.png" width="200" alt="OurNotes MAA">
 </p>
 
 <h1 align="center">OUR NOTES 挂机助手</h1>
@@ -51,7 +51,7 @@
 
 ## 安装与配置
 
-从 [Releases](../../releases) 下载「开箱即用版」（`OurNotes-MAA-<版本>-win-x86_64.zip`），
+从 [Releases](../../releases) 下载最新版本的压缩包（`OurNotes-MAA-<版本>-win-x86_64.zip`），
 解压到任意目录即可。压缩包内已自带 MFAAvalonia（图形界面）、MaaFramework（运行框架）
 和 adb，**不需要另外安装任何组件**。
 
