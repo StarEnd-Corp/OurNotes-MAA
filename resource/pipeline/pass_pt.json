@@ -45,12 +45,28 @@
         ],
         "action": "DoNothing",
         "next": [
-            "PassClaimTop",
-            "PassClickTaskBtn"
+            "PassClaimTopLitGate"
         ],
         "timeout": 8000
     },
 
+    "PassClaimTopLitGate": {
+        "description": "【奖励列表·可领门禁】右下「一键领取」在**有可领**时亮起(V≈229/8994px)、**无可领**时是灰的(V≈117/0px)，实测 100% 区分。命中=有东西可领 → 点它一键领取；没亮 → 去通行证任务页。⚠️ 不能只认它的文字：灰色时文字也在，会永远命中。",
+        "recognition": "ColorMatch",
+        "method": 40,
+        "lower": [95, 60, 180],
+        "upper": [125, 255, 255],
+        "count": 800,
+        "roi": [1040, 635, 240, 60],
+        "action": "DoNothing",
+        "next": [
+            "PassClaimTop"
+        ],
+        "on_error": [
+            "PassClickTaskBtn"
+        ],
+        "timeout": 3000
+    },
     "PassClaimTop": {
         "description": "任务通行证页底部「一键领取」（等级奖励）。⚠️ 2026-10-02 三个坑一起踩：①框架把它读成**「键领取」**（丢「一」）→ expected 必须带上这个真实读数；②roi 若放宽到整片区域，会误匹配卡片上的「领取」文字 → 点击落空，什么都没领到；③按钮真实位置 1080p(1718,989)，肉眼估计偏了 100+px → 必须显式 target。  【2026-10-03】加 replace 纠错表：框架实测会把「一键领取」读成「键领取」（丢字），用替换表纠正，比在 expected 里堆备选写法更干净。",
         "recognition": "OCR",
@@ -85,6 +101,23 @@
                 "一键领取"
             ]
         ]
+    },
+    "PassClaimTopLitGate2": {
+        "description": "【奖励列表·回领门禁】任务页关闭回到奖励列表后，再查一次右下按钮：亮 → 再领一次（任务奖励可能又解锁了新等级奖励）；灰 → 收尾回主界面。",
+        "recognition": "ColorMatch",
+        "method": 40,
+        "lower": [95, 60, 180],
+        "upper": [125, 255, 255],
+        "count": 800,
+        "roi": [1040, 635, 240, 60],
+        "action": "DoNothing",
+        "next": [
+            "PassClaimTop"
+        ],
+        "on_error": [
+            "PassClickHome"
+        ],
+        "timeout": 3000
     },
     "PassClickTaskBtn": {
         "description": "【导航】点右上角「通行证任务」标签进入通行证任务页。【2026-10-03 修复】原 next 只有 [PassOnTasks]，实测在该页上再点一次此标签后那一屏没有「达成情况」→ next 全失败 → 整个任务 status=4000（这就是通行证任务失败的真因）。现在末尾补上该页专属的「关闭」(PassDailyClose)：是任务页就关掉往下走，不在任务页则自然不命中、不会误退。",
@@ -191,8 +224,7 @@
         ],
         "action": "Click",
         "next": [
-            "PassClaimTop",
-            "PassClickHome"
+            "PassClaimTopLitGate2"
         ],
         "timeout": 8000,
         "post_delay": 2000
