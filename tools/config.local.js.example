@@ -1,0 +1,22 @@
+// ============================================================
+//  本机私有配置模板
+//
+//  用法：把这个文件复制一份，改名为 config.local.js（同目录），再按你的环境改下面的值。
+//        config.local.js 已被 .gitignore 排除，不会被提交。
+//
+//  也可以用环境变量覆盖（优先级更高）：MAA_BIN / ADB_PATH / ADB_ADDR
+// ============================================================
+module.exports = {
+    // MaaFramework 的 bin 目录（里面有 MaaNode.node）
+    // 官网：https://github.com/MaaXYZ/MaaFramework/releases
+    MAA_BIN: 'C:\\path\\to\\MaaFramework\\bin',
+
+    // adb.exe 的完整路径；如果 adb 已在 PATH 里，直接写 'adb' 即可
+    // 下载：https://developer.android.com/tools/releases/platform-tools
+    ADB_PATH: 'adb',
+
+    // 模拟器的 ADB 地址:端口
+    //   常见默认值：MuMu 12 = 127.0.0.1:16384，夜神 = 127.0.0.1:62001，雷电 = 127.0.0.1:5555
+    //   查法：adb devices
+    ADB_ADDR: '127.0.0.1:16384',
+};

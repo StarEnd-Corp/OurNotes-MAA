@@ -1,0 +1,791 @@
+{
+    "FreeLiveStart": {
+        "description": "【自由演出（清体力）】入口。可从主界面/演出首页/歌曲选择页进入：点「演出」→ 点「自由演出 FREE LIVE」→ 进入选曲页后判定当前选中曲是否已解锁（未解锁会换到已解锁的曲）→ 点「确定」。后续（编队/跳过）待补。",
+        "recognition": "DirectHit",
+        "next": [
+            "MaintenanceStop",
+            "FLPopupClose",
+            "FLBondReward",
+            "FLRankUp",
+            "FLClickLive",
+            "FLClickFreeLive",
+            "FLUnlockCheck",
+            "FLConfirmSong",
+            "FLConfirmSongOCR",
+            "FLLiveFinish",
+            "FLResultLoop",
+            "FLResultAgain",
+            "FLBackTeam"
+        ],
+        "timeout": 60000,
+        "pre_delay": 500,
+        "post_delay": 1000
+    },
+    "FLClickLive": {
+        "description": "主界面底部导航「演出」（**OCR 认文字**，不用模板）：主界面背景随主题/活动轮换，模板分数会从 0.93 掉到 0.47 而失配（实测踩过）——文字识别与背景无关。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "Click",
+        "next": [
+            "FLClickFreeLive"
+        ],
+        "timeout": 20000,
+        "post_delay": 3000
+    },
+    "FLClickFreeLive": {
+        "description": "主界面「演出」页里的「自由演出」入口（模板 free_live.png）。【2026-10-03 修正】原 next 只指向 FLUnlockCheck（探测「未解锁」锁图标），而选曲页上没有锁时该节点不命中 → 整链直接断（实测 32 秒 4000）。现改为：先点选曲页第一行歌曲(FLTapRow1)，再交由下一跳点「确定」。",
+        "recognition": "TemplateMatch",
+        "template": "free_live.png",
+        "roi": [
+            700,
+            250,
+            400,
+            200
+        ],
+        "action": "Click",
+        "next": [
+            "FLTapRow1",
+            "FLScroll1"
+        ],
+        "timeout": 20000,
+        "post_delay": 3000
+    },
+    "FLUnlockCheck": {
+        "description": "（可选分支）探测「未解锁」锁图标。⚠️ 2026-10-03：它已不在必经路径上——原先放在 FLClickFreeLive 之后导致无锁时整链中断。",
+        "recognition": "TemplateMatch",
+        "template": "unlock_block.png",
+        "roi": [
+            700,
+            500,
+            300,
+            80
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLScroll1"
+        ],
+        "on_error": [
+            "FLConfirmSong"
+        ],
+        "timeout": 3000
+    },
+    "FLScroll1": {
+        "description": "把歌曲列表下拽（回到更早的曲子，通常在顶部都是已解锁的）。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            300
+        ],
+        "end": [
+            200,
+            800
+        ],
+        "duration": 400,
+        "next": [
+            "FLScroll2"
+        ],
+        "post_delay": 400
+    },
+    "FLScroll2": {
+        "description": "同上，第二次下拽。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            300
+        ],
+        "end": [
+            200,
+            800
+        ],
+        "duration": 400,
+        "next": [
+            "FLScroll3"
+        ],
+        "post_delay": 400
+    },
+    "FLScroll3": {
+        "description": "同上，第三次下拽（确保列表回到顶端）。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            300
+        ],
+        "end": [
+            200,
+            800
+        ],
+        "duration": 400,
+        "next": [
+            "FLTapRow1"
+        ],
+        "post_delay": 400
+    },
+    "FLTapRow1": {
+        "description": "选曲页第一行歌曲（DirectHit 固定坐标 720p 333,120）。【2026-10-03】next 补上「确定」两个识别节点，之后才轮得到解锁检查（降为可选分支）。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            333,
+            120
+        ],
+        "next": [
+            "FLConfirmSong",
+            "FLConfirmSongOCR",
+            "FLUnlockCheck2"
+        ],
+        "post_delay": 1200
+    },
+    "FLUnlockCheck2": {
+        "description": "再判定：仍锁定 → 换第 2 行；已解锁 → on_error 去点确定。",
+        "recognition": "TemplateMatch",
+        "template": "unlock_block.png",
+        "roi": [
+            700,
+            500,
+            300,
+            80
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLTapRow2"
+        ],
+        "on_error": [
+            "FLConfirmSong"
+        ],
+        "timeout": 3000
+    },
+    "FLTapRow2": {
+        "description": "点列表第 2 行（约 y=223 @720p）。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            333,
+            223
+        ],
+        "next": [
+            "FLUnlockCheck3"
+        ],
+        "post_delay": 1200
+    },
+    "FLUnlockCheck3": {
+        "description": "再判定：仍锁定 → 换第 3 行；已解锁 → 去点确定。",
+        "recognition": "TemplateMatch",
+        "template": "unlock_block.png",
+        "roi": [
+            700,
+            500,
+            300,
+            80
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLTapRow3"
+        ],
+        "on_error": [
+            "FLConfirmSong"
+        ],
+        "timeout": 3000
+    },
+    "FLTapRow3": {
+        "description": "点列表第 3 行（约 y=327 @720p）。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            333,
+            327
+        ],
+        "next": [
+            "FLUnlockCheck4"
+        ],
+        "post_delay": 1200
+    },
+    "FLUnlockCheck4": {
+        "description": "最后一次判定：仍锁定 → 放弃并回主页（日志里可见）；已解锁 → 去点确定。",
+        "recognition": "TemplateMatch",
+        "template": "unlock_block.png",
+        "roi": [
+            700,
+            500,
+            300,
+            80
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLGiveUp"
+        ],
+        "on_error": [
+            "FLConfirmSong"
+        ],
+        "timeout": 3000
+    },
+    "FLGiveUp": {
+        "description": "连换 3 行都没找到已解锁的曲：点顶部「主页」收尾，避免卡在选曲页。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "FLAborted"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "FLAborted": {
+        "description": "放弃分支的终点（任务成功结束，但日志里能看到是 FLGiveUp/FLAborted，即没找到已解锁的曲子）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 3000
+    },
+    "FLConfirmSong": {
+        "description": "选曲页右下「确定」（模板匹配，实测 0.94 稳定）。⚠️ 这一颗不能只用 OCR：按钮文字太小/描边重，框架实测读成「确寇」而失配（2026-10-02 亲测退步）。故另配 FLConfirmSongOCR 兜底，模板失效时才用它。  【计数点】GUI 选项「跳过」= 1/2/3 次通过 max_hit 施加在此节点（每轮恰好命中一次）。",
+        "recognition": "TemplateMatch",
+        "template": "start_confirm.png",
+        "roi": [
+            1050,
+            600,
+            250,
+            90
+        ],
+        "action": "Click",
+        "next": [
+            "FLBClickLB"
+        ],
+        "timeout": 12000,
+        "post_delay": 4000
+    },
+    "FLBClickLB": {
+        "description": "编队页底部「消耗LB」按钮（OCR 识别，用 消耗L. 兼容 OCR 把 B 认成 8 的情况）→ 打开 LIVE BOOST 消耗设置面板。",
+        "recognition": "OCR",
+        "expected": "消耗L.",
+        "roi": [
+            860,
+            640,
+            180,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "FLBChooseMode"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "FLBChooseMode": {
+        "description": "【模式分叉】默认（勾选项「使用全消耗」= 否）：直接做体力判定。实测该面板几乎不滚动、最上一档就是最大档(🔥3)，故不做翻页；勾选「使用全消耗」时该节点被 pipeline_override 改成直接去点「全部消耗」。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLBStaminaCheck"
+        ],
+        "timeout": 3000
+    },
+    "FLBScrollTop1": {
+        "description": "【备用】把消耗档位列表拉回顶部（坐标用 4 元组）；当前流程未使用。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            637,
+            200,
+            0,
+            0
+        ],
+        "end": [
+            637,
+            460,
+            0,
+            0
+        ],
+        "duration": 400,
+        "next": [
+            "FLBScrollTop2"
+        ],
+        "post_delay": 400
+    },
+    "FLBScrollTop2": {
+        "description": "【备用】同上，第二次。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            637,
+            200,
+            0,
+            0
+        ],
+        "end": [
+            637,
+            460,
+            0,
+            0
+        ],
+        "duration": 400,
+        "next": [
+            "FLBStaminaCheck"
+        ],
+        "post_delay": 400
+    },
+    "FLBStaminaCheck": {
+        "description": "【体力判定】OCR 读面板底部「体力 / 上限」里的体力值（左侧那个数，右侧是持有上限）。expected 为正则：匹配 >= 最大档(3) 的数 → 体力够，选最大消耗档；不匹配（体力 < 3）→ 走 on_error 只记录、保持当前档位。",
+        "recognition": "OCR",
+        "expected": "[3-9]|[1-9][0-9]",
+        "roi": [
+            640,
+            548,
+            150,
+            50
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLBSelectMax"
+        ],
+        "on_error": [
+            "FLBLowStamina"
+        ],
+        "timeout": 3000
+    },
+    "FLBSelectMax": {
+        "description": "点列表最上一行 = 最大消耗档（当前为 🔥3；档位变多时依然是最上一行）。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            637,
+            122
+        ],
+        "next": [
+            "FLBOK"
+        ],
+        "post_delay": 1000
+    },
+    "FLBLowStamina": {
+        "description": "【日志】体力 < 最大档：不强行选最大，保持原有档位继续（日志里能看到本节点命中）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLBOK"
+        ],
+        "timeout": 3000
+    },
+    "FLBSelectAll": {
+        "description": "勾选「全部消耗」（最多 10 点、每日 1 次）—— 勾选项「使用全消耗」= 是 时走这里。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            323,
+            437
+        ],
+        "next": [
+            "FLBOK"
+        ],
+        "post_delay": 1000
+    },
+    "FLBOK": {
+        "description": "LIVE BOOST 消耗设置面板底部的 OK：确认档位。",
+        "recognition": "OCR",
+        "expected": "OK|0K|Ok",
+        "roi": [
+            560,
+            630,
+            160,
+            70
+        ],
+        "action": "Click",
+        "next": [
+            "FLTeamLoop"
+        ],
+        "timeout": 10000,
+        "post_delay": 3000
+    },
+    "FLBSetOnly": {
+        "description": "【测试/单独使用入口】假设 LIVE BOOST 消耗设置面板已经打开：直接走档位选择 → OK → 跳过。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLBChooseMode"
+        ],
+        "timeout": 3000
+    },
+    "FLClickSkip": {
+        "description": "编队页「跳过」按钮（打开「确认跳过」面板，此时还未消耗）。【2026-10-03】next 改为先经 FLSkipTierPick 选档，再点面板里的「跳过」执行。",
+        "recognition": "OCR",
+        "expected": "跳过",
+        "roi": [
+            700,
+            640,
+            180,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "FLSkipTierPick"
+        ],
+        "timeout": 15000,
+        "post_delay": 2000
+    },
+    "FLClickSkipConfirm": {
+        "description": "「确认跳过」面板里的「跳过」按钮 —— 点下去才真正消耗（跳过券 + 选定档位）。由 FLSkipTierPick 选完档后进来。",
+        "recognition": "OCR",
+        "expected": "跳过",
+        "roi": [
+            700,
+            640,
+            180,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "FLResultLoop"
+        ],
+        "on_error": [
+            "FLStopNoTicket"
+        ],
+        "timeout": 10000,
+        "post_delay": 5000
+    },
+    "FLPopupClose": {
+        "description": "通用：新功能解锁类弹窗（如「录音室练习功能解锁」）→ 点「关闭」。先 OCR 认标题再点固定坐标，不盲点。",
+        "recognition": "OCR",
+        "expected": ".*功能解锁.*",
+        "roi": [
+            480,
+            110,
+            640,
+            120
+        ],
+        "action": "Click",
+        "target": [
+            498,
+            571
+        ],
+        "next": [
+            "FreeLiveStart"
+        ],
+        "timeout": 5000,
+        "post_delay": 2000
+    },
+    "FLResume": {
+        "description": "【续跑/测试入口】DirectHit：从当前任意一屏把自由演出流程接上（LIVE FINISH 页 → 结算推进 → 编队页循环）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLPopupClose",
+            "FLRankUp",
+            "FLLiveFinish",
+            "FLResultLoop",
+            "FLLogResult",
+            "FLResultAgain",
+            "FLBackTeam",
+            "FLUnlockCheck",
+            "FLConfirmSong",
+            "FLConfirmSongOCR"
+        ],
+        "timeout": 3000
+    },
+    "FLLiveFinish": {
+        "description": "结算的「LIVE FINISH」评级页（显示评级 D/C/B/A/S/SS）：本页无按钮，需点屏幕中央继续。先用 OCR 确认是这一页再点，避免跨屏盲点（血的教训）。",
+        "recognition": "OCR",
+        "expected": ".*FINISH.*",
+        "roi": [
+            500,
+            100,
+            500,
+            130
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            360
+        ],
+        "next": [
+            "FLResultLoop"
+        ],
+        "timeout": 8000,
+        "post_delay": 3000
+    },
+    "FLResultLoop": {
+        "description": "结算页推进：OCR 认结算页的推进按钮（文字有两种：右下角「下一步」、居中「OK」）就点，点了继续找（自循环），最多 12 次。⚠️ 不能用模板匹配：结算页「下一步」与编队页 LIVESTART 同在右下角，会误配并误开一首歌（实测踩过）。",
+        "recognition": "OCR",
+        "expected": "下一.|OK",
+        "roi": [
+            600,
+            600,
+            700,
+            110
+        ],
+        "action": "Click",
+        "max_hit": 12,
+        "next": [
+            "FLBondReward",
+            "FLResultLoop",
+            "FLLiveFinish",
+            "FLLogResult",
+            "FLResultAgain",
+            "FLRankUp",
+            "FLBackTeam"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
+    },
+    "FLBackTeam": {
+        "description": "确认已回到编队页（还能看到「跳过」）→ 回到循环头部做下一轮。",
+        "recognition": "OCR",
+        "expected": "跳过",
+        "roi": [
+            700,
+            640,
+            180,
+            60
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLTeamLoop"
+        ],
+        "timeout": 6000
+    },
+    "FLLogResult": {
+        "description": "【日志节点】结算总结页：OCR 读「累计活动pt / 挑战pt」等文字，配合上方 ×3 倍率一起被框架记进 debug/maafw.log（本节点只读不点）。",
+        "recognition": "OCR",
+        "expected": "累计活动pt|挑战pt",
+        "roi": [
+            600,
+            150,
+            320,
+            280
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLResultAgain"
+        ],
+        "timeout": 5000
+    },
+    "FLResultAgain": {
+        "description": "结算总结页右下「再次演出」：点了回演出流程继续下一轮。next 先试「确定」（FLConfirmSong，本轮的计数点）；若已用完设定次数（max_hit 耗尽）则落到 FLStopByCount 收尾回主页。",
+        "recognition": "OCR",
+        "expected": "再.演出|再次演出",
+        "roi": [
+            950,
+            620,
+            330,
+            110
+        ],
+        "action": "Click",
+        "next": [
+            "FLConfirmSong",
+            "FLStopByCount"
+        ],
+        "timeout": 6000,
+        "post_delay": 4000
+    },
+    "FLTeamLoop": {
+        "description": "【清体力循环头】编队页：判跳过券。⚠️ Maa 语义：节点自己识别失败时不会走 on_error（on_error 只管 next 全失败），所以必须把「券用完」也写成本循环头的一条正路（FLTicketGone），不能只挂在 FLTicketCheck 的 on_error 上。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLTicketCheck",
+            "FLTicketGone"
+        ],
+        "timeout": 3000
+    },
+    "FLStaminaTeamCheck": {
+        "description": "【终止条件之一】OCR 读编队页体力值（消耗LB 那一行的左侧数字）。正则匹配 ≥3 → 体力够，继续；不匹配（体力 <3）→ 走 on_error 收尾。",
+        "recognition": "OCR",
+        "expected": "[3-9]|[1-9][0-9]",
+        "roi": [
+            1075,
+            650,
+            130,
+            45
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLTicketCheck"
+        ],
+        "on_error": [
+            "FLStopLowStamina"
+        ],
+        "timeout": 3000
+    },
+    "FLTicketCheck": {
+        "description": "【终止条件之二】OCR 读编队页的「还剩N次」（跳过券）。匹配 还剩1~9次 → 还有券，继续；不匹配（券用完/读不到）→ 走 on_error 收尾。",
+        "recognition": "OCR",
+        "expected": "还剩[1-9].",
+        "roi": [
+            700,
+            590,
+            200,
+            55
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLClickSkip"
+        ],
+        "on_error": [
+            "FLStopNoTicket"
+        ],
+        "timeout": 3000
+    },
+    "FLRankUp": {
+        "description": "【意外弹窗】羁绊 RANK UP 弹窗。【2026-10-03 修正】原 target (640,520) 太高、点不到底部 OK → 改为实测的 (641,662)。next 里补上 FLBondReward（RANK UP 之后常常接着弹羁绊奖励详情）。",
+        "recognition": "OCR",
+        "expected": "RANK ?UP|RANKUP",
+        "roi": [
+            450,
+            200,
+            560,
+            120
+        ],
+        "action": "Click",
+        "target": [
+            641,
+            662
+        ],
+        "next": [
+            "FLBondReward",
+            "FLResultLoop",
+            "FLBackTeam",
+            "FLClickHomeEnd"
+        ],
+        "timeout": 5000,
+        "post_delay": 2500
+    },
+    "FLStopLowStamina": {
+        "description": "【收尾】体力不足最大档：记录后（先处理可能的升级弹窗）回主页。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLRankUp",
+            "FLClickHomeEnd"
+        ],
+        "timeout": 3000
+    },
+    "FLStopNoTicket": {
+        "description": "【收尾】跳过券用完或跳过失败：记录后（先处理可能的升级弹窗）回主页。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLRankUp",
+            "FLClickHomeEnd"
+        ],
+        "timeout": 3000
+    },
+    "FLClickHomeEnd": {
+        "description": "点顶部「主页」返回主界面收尾。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "FLDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "FLDone": {
+        "description": "【终点】清体力结束（体力不足 / 券用完 / 单次流程结束）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 3000
+    },
+    "FLConfirmSongOCR": {
+        "description": "「确定」的 OCR 兜底：容忍 OCR 读残（确寇/确认…），用 确.. 宽松匹配 + 限定 roi。模板命中时不会走到这里。",
+        "recognition": "OCR",
+        "expected": "确..",
+        "roi": [
+            1060,
+            615,
+            240,
+            85
+        ],
+        "action": "Click",
+        "next": [
+            "FLBClickLB"
+        ],
+        "timeout": 8000,
+        "post_delay": 4000
+    },
+    "FLTicketGone": {
+        "description": "【终止条件之二·正路】编队页左上角读到「还剩0次」→ 转入收尾。",
+        "recognition": "OCR",
+        "expected": "还剩0",
+        "roi": [
+            700,
+            590,
+            200,
+            55
+        ],
+        "action": "DoNothing",
+        "next": [
+            "FLStopNoTicket"
+        ],
+        "timeout": 3000
+    },
+    "FLStopByCount": {
+        "description": "【收尾】已达到 GUI 设定的「跳过 N 次」→ 处理可能的升级弹窗后回主页停止。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "FLRankUp",
+            "FLClickHomeEnd"
+        ],
+        "timeout": 3000
+    },
+    "FLSkipTierPick": {
+        "description": "【跳过·选档】在「确认跳过」面板里选择 LIVE BOOST 消耗档位。档位行（720p）：3火(637,126) / 2火(637,181) / 1火(637,237) / 0火(637,293)；「全部消耗」行(644,366，每日 1 次)。默认 target 指向「全部消耗」；GUI 的「消耗档位」下拉会用 pipeline_override 覆盖 target。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            644,
+            366
+        ],
+        "next": [
+            "FLClickSkipConfirm"
+        ],
+        "timeout": 5000,
+        "post_delay": 1200
+    },
+    "FLBondReward": {
+        "description": "【意外弹窗】跳过演出后可能弹出「羁绊奖励详情」（角色羁绊升级，发技能强化券等，一个角色一个）。【2026-10-03 实测补】跑完整跳过链时正是被它卡住 → 链里 next 全不匹配 → 任务 status=4000。标题在屏幕顶部中央，关闭按钮在底部中央（720p 641,660）。故意用明确 target 而不是命中的标题框中心（标题在上方，点它没用）。",
+        "recognition": "OCR",
+        "expected": "羁绊奖励详情",
+        "roi": [
+            420,
+            10,
+            440,
+            70
+        ],
+        "action": "Click",
+        "target": [
+            641,
+            660
+        ],
+        "next": [
+            "FLBondReward",
+            "FLRankUp",
+            "FLResultLoop",
+            "FLLiveFinish",
+            "FLResultAgain",
+            "FLBackTeam"
+        ],
+        "timeout": 3000,
+        "post_delay": 1200
+    }
+}

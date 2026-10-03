@@ -1,0 +1,148 @@
+{
+    "TaskStart": {
+        "description": "【领取任务奖励（每日·常规）】入口。主界面右侧带✓图标（1080p ≈(1846,330)）→「任务」页 → **点一次**「一键领取」（跨分页生效）→ 关弹窗 → 关闭 → 回主页。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "TaskPopupOK",
+            "TaskOnHome",
+            "TaskOnPage",
+            "TaskDone"
+        ],
+        "timeout": 30000,
+        "pre_delay": 500
+    },
+    "TaskOnHome": {
+        "description": "确认在主界面（OCR 底部导航「演出」）→ 再去点带✓的任务图标（避免跨屏盲点）。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [
+            "TaskClickIcon"
+        ],
+        "timeout": 8000
+    },
+    "TaskClickIcon": {
+        "description": "主界面右侧带✓的任务图标（HUD 图标、无文字，HUD 位置固定不受主题轮换影响；实测 PASS 卡同样位置常年 (1846,513)）→ 固定目标 (1231,220)@720p。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1231,
+            220
+        ],
+        "next": [
+            "TaskOnPage"
+        ],
+        "post_delay": 3500
+    },
+    "TaskOnPage": {
+        "description": "任务页识别（OCR「达成情况」）。⚠️ 2026-10-02 踩坑：roi 左边界收在 x=60 时把「达」切掉，框架只读到「成情况」→ 整条链断掉。roi 宁可放宽到把整段文字都包进去。",
+        "recognition": "OCR",
+        "expected": "达成情况",
+        "roi": [
+            25,
+            535,
+            360,
+            80
+        ],
+        "action": "DoNothing",
+        "max_hit": 5,
+        "next": [
+            "TaskClaim"
+        ],
+        "timeout": 8000
+    },
+    "TaskClaim": {
+        "description": "任务页「一键领取」。**只需点一次**：实测它跨分页生效（领完「每日」后「常规」的红点也一起消失），不需要逐页切换（2026-10-02 实测）。点完 → 有弹窗点 OK，没弹窗直接关闭。",
+        "recognition": "OCR",
+        "expected": "一键领取|键领取",
+        "roi": [
+            700,
+            615,
+            230,
+            90
+        ],
+        "action": "Click",
+        "max_hit": 6,
+        "next": [
+            "TaskPopupOK",
+            "TaskClose"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
+    },
+    "TaskPopupOK": {
+        "description": "「领取奖励／已领取以下道具」等弹窗确认：只认「OK」文字（按钮位置随内容变），roi 覆盖弹窗下半部。max_hit=12 防死循环；点完 → 关闭收尾。",
+        "recognition": "OCR",
+        "expected": "OK",
+        "roi": [
+            300,
+            300,
+            700,
+            420
+        ],
+        "action": "Click",
+        "max_hit": 12,
+        "next": [
+            "TaskPopupOK",
+            "TaskClose"
+        ],
+        "timeout": 6000,
+        "post_delay": 2500
+    },
+    "TaskClose": {
+        "description": "任务页左下「关闭」→ 关掉后多半已在主界面，故 next 先试房子图标、再直接判主界面收尾（任务页本身没有房子图标，实测）。",
+        "recognition": "OCR",
+        "expected": "关闭",
+        "roi": [
+            380,
+            600,
+            240,
+            110
+        ],
+        "action": "Click",
+        "next": [
+            "TaskClickHome",
+            "TaskDone"
+        ],
+        "timeout": 8000,
+        "post_delay": 2000
+    },
+    "TaskClickHome": {
+        "description": "任务页左上「主页」房子图标 → 回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "TaskDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "TaskDone": {
+        "description": "完成条件：回到主界面（OCR 认底部导航「演出」）→ 不点击，任务成功结束。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000
+    }
+}

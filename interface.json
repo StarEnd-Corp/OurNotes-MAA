@@ -1,0 +1,219 @@
+{
+    // ProjectInterface V2 协议（本文件支持 // 注释）
+    // 协议文档：MaaFramework/docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+    "interface_version": 2,
+    "name": "OurNotesAuto",
+    "label": "OUR NOTES 挂机助手",
+    "icon": "logo.ico",
+    "title": "OUR NOTES 挂机助手 v0.1.0",
+    "version": "0.1.0",
+
+    // ↓↓↓ 资源更新/检查用：github = 海外源地址，资源检查工具会读这里取最新版本号
+    "github": "https://github.com/StarEnd-Corp/OurNotes-MAA1",
+    "contact": "CONTACT",
+    "license": "LICENSE",
+    "description": "针对《BanG Dream! Our Notes》的挂机流程骨架：自动进入歌曲并挂机到结算后重复。识别词与素材需按实际游戏界面调整，详见 README.md",
+    "controller": [
+        {
+            "name": "Android",
+            "label": "安卓 / 模拟器",
+            "description": "通过 ADB 连接安卓模拟器（MuMu / 夜神 / 雷电等均可），设备地址请在 GUI 里填写",
+            "type": "Adb",
+            "display_short_side": 720
+            // adb 路径与设备地址不写在这里（避免仓库带上个人机器的路径）：
+            // 请在 MFAAvalonia 的「设备连接」里选填 adb 路径与 127.0.0.1:<端口>，
+            // 或用 tools/config.local.js 给命令行脚本配置（见 tools/config.local.js.example）
+        }
+    ],
+    "resource": [
+        {
+            "name": "Official",
+            "label": "官服资源",
+            "description": "OUR NOTES 官服/全球服资源包",
+            "path": [
+                "resource"
+            ]
+        }
+    ],
+    "option": {
+        "无限刷": {
+            "type": "switch",
+            "label": "无限刷",
+            "default_case": "No",
+            "description": "是 = 不设次数上限，一直刷到手动停止（配合「LIVE BOOST=🔥0（0火）」可零消耗长刷）。否 = 用「挂机次数」里的数字。",
+            "cases": [
+                { "name": "Yes", "label": "是", "pipeline_override": { "ClickStart": { "max_hit": 99999 } } },
+                { "name": "No", "label": "否" }
+            ]
+        },
+        "LIVE BOOST消耗": {
+            "type": "select",
+            "label": "LIVE BOOST",
+            "default_case": "none",
+            "description": "挂机打歌用哪档 LIVE BOOST。默认「不设置」= 沿用游戏当前档位（会消耗火）。选「🔥0（0火）」= 开演前自动把档位设成 0，不消耗火，可长时间无限刷曲（单曲奖励较少）。",
+            "cases": [
+                { "name": "none", "label": "不设置", "pipeline_override": { "GrindLBSet": { "enabled": false } } },
+                { "name": "zero", "label": "🔥0（0火）", "pipeline_override": { "GrindLBSet": { "enabled": true } } }
+            ]
+        },
+        "挂机次数": {
+            "type": "input",
+            "label": "挂机次数",
+            "description": "打几首歌后停止（与「体力耗尽即停」并存，谁先到谁停）。",
+            "inputs": [
+                { "name": "times", "label": "次数", "default": "3", "pipeline_type": "int", "verify": "^[1-9][0-9]?$", "description": "1~99 的整数" }
+            ],
+            "pipeline_override": {
+                "ClickStart": { "max_hit": "{times}" }
+            }
+        },
+        "曲目": {
+            "type": "select",
+            "label": "曲目",
+            "default_case": "none",
+            "description": "指定挂机打哪首歌。默认「不指定」= 用当前选中的曲（不改选曲）。选「これはぼくたちの生存のあらすじ」时会在选曲页按歌名点选该曲（夢限大MewType）。",
+            "cases": [
+                { "name": "none", "label": "不指定", "pipeline_override": { "GrindPickSong": { "enabled": false } } },
+                { "name": "shengcun", "label": "これはぼくたちの生存のあらすじ", "pipeline_override": { "GrindPickSong": { "enabled": true } } }
+            ]
+        },
+        "启动客户端": {
+            "type": "checkbox",
+            "label": "启动客户端",
+            "min_count": 0,
+            "max_count": 1,
+            "default_case": ["启动客户端"],
+            "description": "勾选(默认)=先拉起游戏本体再走到主界面（冷启动也能用，会自动处理 TAP TO START / 登录奖励剧情 / 公告 / 日期变更）；不勾=假定游戏已在跑，直接走启动流程。",
+            "cases": [
+                { "name": "启动客户端", "label": "启动客户端", "pipeline_override": { "LaunchClientApp": { "enabled": true } } }
+            ]
+        },
+        "跳过": {
+            "type": "select",
+            "label": "跳过",
+            "default_case": "1",
+            "description": "本任务做几次演出跳过（1~3）。每轮 = 确定 → 编队页 → 跳过×2 → 结算 → 再次演出。原有收尾仍在：体力<3 或跳过券用完会更早停。",
+            "cases": [
+                { "name": "1", "label": "1次", "pipeline_override": { "FLConfirmSong": { "max_hit": 1 } } },
+                { "name": "2", "label": "2次", "pipeline_override": { "FLConfirmSong": { "max_hit": 2 } } },
+                { "name": "3", "label": "3次", "pipeline_override": { "FLConfirmSong": { "max_hit": 3 } } }
+            ]
+        },
+        "体力耗尽即停": {
+            "type": "switch",
+            "label": "体力耗尽即停",
+            "default_case": "Yes",
+            "description": "开(默认)=每首开演前判编队页体力，<3 时自动回主页停止挂机；关=一直挂下去不判体力。",
+            "cases": [
+                { "name": "Yes", "label": "是" },
+                { "name": "No", "label": "否", "pipeline_override": { "ClickStart": { "next": ["ClickTutorialClose", "ClickTeamFlow", "ClickStartOCR"] }, "ClickTutorialClose": { "next": ["ClickTeamFlow"] } } }
+            ]
+        },
+        "使用全消耗": {
+            "type": "switch",
+            "label": "使用全消耗",
+            "description": "开 = 自由演出前直接选择「全部消耗」（最多 10 点，每日 1 次）。关 = 按体力自动选最大档（体力 ≥ 最大档时选最大档）。",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "label": "是",
+                    "pipeline_override": {
+                        "FLBChooseMode": {
+                            "next": [
+                                "FLBSelectAll"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "label": "否"
+                }
+            ]
+        },
+        "消耗档位": {
+            "type": "select",
+            "label": "消耗档位",
+            "default_case": "全消耗+最高火",
+            "description": "跳过演出时，在「确认跳过」面板里选择的 LIVE BOOST 消耗档位。全消耗+最高火 = 点面板上的「全部消耗」（消耗演出开始时持有的全部，每日 1 次，用掉后当日不可选）；3/2/1/0 火 = 对应固定档位（0 火 = 完全不消耗）。",
+            "cases": [
+                { "name": "全消耗+最高火", "label": "全消耗+最高火", "pipeline_override": { "FLSkipTierPick": { "target": [644, 366] } } },
+                { "name": "3火", "label": "3 火", "pipeline_override": { "FLSkipTierPick": { "target": [637, 126] } } },
+                { "name": "2火", "label": "2 火", "pipeline_override": { "FLSkipTierPick": { "target": [637, 181] } } },
+                { "name": "1火", "label": "1 火", "pipeline_override": { "FLSkipTierPick": { "target": [637, 237] } } },
+                { "name": "0火", "label": "0 火（不消耗）", "pipeline_override": { "FLSkipTierPick": { "target": [637, 293] } } }
+            ]
+        }
+    },
+    "task": [
+        {
+            "name": "启动游戏（进到主页）",
+            "entry": "LaunchGame",
+            "default_check": false,
+            "option": [
+                "启动客户端"
+            ],
+            "description": "从标题页推进到带「演出」的主界面：自动点 TAP TO START、处理登录奖励弹窗(SKIP)与每日23:00的日期变更弹窗；识别到「演出」按钮即完成。"
+        },
+                {
+            "name": "领取TWG积分＋每日奖励",
+            "entry": "TWGDaily",
+            "default_check": true,
+            "description": "主界面 → 商店 → T.G.W CARD 页 → 先领「积分」→ 关弹窗 → 再领「每日奖励」（小型LIVE BOOST饮料×1）→ OK → 回主页。每日 23:00 重置；已领会自动跳过。（2026-10-02 两条链合并为一条）"
+        },
+        {
+            "name": "领取商店每日Live Boost",
+            "entry": "TWGLiveBonus",
+            "default_check": true,
+            "description": "主界面 → 商店 → 左栏「T.G.W CARD 专享商品目录」→ 滚到列表底部 → 领取「每日 Live Boost」（小型LIVE BOOST饮料×1，免费）→ 确认 → 返回主界面。已领过（SOLD OUT）时只记录不点击；每日 23:00 重置。"
+        },
+        {
+            "name": "使用跳过进行演出",
+            "entry": "FreeLiveStart",
+            "default_check": false,
+            "option": [
+                "使用全消耗",
+                "跳过",
+                "消耗档位"
+            ],
+            "description": "主界面 → 演出 → 自由演出 → 选曲（自动避开未解锁曲）→ 确定 → 编队页设 LIVE BOOST 档位（默认按体力选最大档；「使用全消耗」= 直接选全部消耗）→ 跳过（两段确认）→ 结算 →「再次演出」循环；循环次数由下拉「跳过」控制（1~3 次），并保留体力<3 / 跳过券用完的更早收尾。"
+        },
+        {
+            "name": "挂机打歌（不按键）",
+            "entry": "GrindStart",
+            "default_check": false,
+            "option": [
+                "体力耗尽即停",
+                "挂机次数",
+                "曲目",
+                "LIVE BOOST消耗",
+                "无限刷"
+            ],
+            "description": "自动进入歌曲 → 打歌期间不按键 → 结算后重复。开关「体力耗尽即停」（默认开）：每首开演前判编队页体力，<3 时自动回主页停止。注意：请自行确认该玩法符合游戏服务条款，脚本类自动化存在账号风险。"
+        },
+        {
+            "name": "领取通行证pt（每日）",
+            "entry": "PassStart",
+            "default_check": true,
+            "description": "主界面右侧 PASS 卡 → 任务通行证页「一键领取」（等级奖励）→「通行证任务」页「一键领取」（每日 pt：登录游戏 / 消耗10点LIVE BOOST / 消耗20点LIVE BOOST 等）→ 关弹窗 →「主页」回主界面。"
+        },
+        {
+            "name": "领取任务奖励（每日·常规）",
+            "entry": "TaskStart",
+            "default_check": true,
+            "description": "主界面右侧带✓的任务图标 →「任务」页 → 点一次「一键领取」（实测跨分页生效，无需逐页切换）→ 关弹窗 → 关闭 → 回主页。"
+        },
+        {
+            "name": "领取礼物盒奖励",
+            "entry": "GiftStart",
+            "default_check": true,
+            "description": "主界面右侧礼物盒图标 →「礼物盒」页（未领取列表）→ 一键领取（一次领完全部）→ 关弹窗 → 关闭 → 回主页。"
+        },
+        {
+            "name": "领取录音室奖励",
+            "entry": "StudioStart",
+            "default_check": true,
+            "description": "主界面右侧谱架图标（录音室）→「录音室练习」页 → 一键领取（收各乐队自动挂机/练习奖励）→ 关弹窗 → 主页回主界面。"
+        }
+    ]
+}

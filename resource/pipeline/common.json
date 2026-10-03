@@ -1,0 +1,16 @@
+{
+    "MaintenanceStop": {
+        "description": "【共享节点】服务器维护中：识别标题「维护中」→ 用 StopTask 中断当前任务链，避免在维护页空转到超时（2026-10-02 大版本更新维护 11:00~16:00 实测撞到）。非维护状态不会命中，可安全挂在各入口候选列表首位。",
+        "recognition": "TemplateMatch",
+        "template": "maintenance.png",
+        "roi": [
+            500,
+            0,
+            300,
+            90
+        ],
+        "action": "StopTask",
+        "next": [],
+        "timeout": 10000
+    }
+}

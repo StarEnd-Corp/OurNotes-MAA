@@ -1,0 +1,192 @@
+{
+    "LaunchGame": {
+        "description": "【启动游戏】入口。循环检测：标题页(TAP TO START) / 登录奖励等弹窗(SKIP) / 每日23:00的日期变更弹窗 → 直到主界面出现「演出」按钮即为完成。",
+        "recognition": "DirectHit",
+        "next": [
+            "MaintenanceStop",
+            "LogDataDownloadSize",
+            "LaunchClientApp",
+            "LaunchDataDownload",
+            "LaunchTapToStart",
+            "LaunchTouch",
+            "LaunchSkipLoginBonus",
+            "LaunchNoticeClose",
+            "LaunchDateChange",
+            "LaunchHome",
+            "LaunchBootWait"
+        ],
+        "timeout": 300000,
+        "pre_delay": 500,
+        "post_delay": 1500
+    },
+    "LaunchTapToStart": {
+        "description": "标题页 TAP TO START → 进游戏。timeout 放宽到 60s，用于冷启动后等待加载。",
+        "recognition": "OCR",
+        "expected": "TAP TO START",
+        "roi": [
+            780,
+            540,
+            400,
+            120
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 60000,
+        "post_delay": 3000
+    },
+    "LaunchSkipLoginBonus": {
+        "description": "登录奖励等全屏弹窗：点击右上角 SKIP（实测多个弹窗此按钮位置样式一致）。",
+        "recognition": "TemplateMatch",
+        "template": "skip_btn.png",
+        "roi": [
+            1115,
+            5,
+            145,
+            70
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 8000,
+        "post_delay": 1500
+    },
+    "LaunchDateChange": {
+        "description": "每日 23:00（北京时间）日期变更弹窗：点击「前往标题画面」，之后游戏会重启回标题页。",
+        "recognition": "TemplateMatch",
+        "template": "date_change_btn.png",
+        "roi": [
+            505,
+            540,
+            270,
+            64
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 8000,
+        "post_delay": 3000
+    },
+    "LaunchHome": {
+        "description": "完成条件：主界面识别到「演出」按钮 → 不点击，任务成功结束。  【2026-10-02 改 OCR 认文字，抗主题轮换】",
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 5000,
+        "expected": "演出"
+    },
+    "LogDataDownloadSize": {
+        "description": "【日志节点】把「数据下载」弹窗的下载大小写进 MAA 日志：本节点用 OCR 识别该数值区，识别到的文字会被框架记入 debug/maafw.log 的 recognition result（text 字段）。不点击，随后交给 LaunchDataDownload 点 OK。",
+        "recognition": "OCR",
+        "expected": "[0-9]+\\.[0-9]+M",
+        "roi": [
+            700,
+            268,
+            180,
+            52
+        ],
+        "action": "DoNothing",
+        "next": [
+            "LaunchDataDownload"
+        ],
+        "timeout": 5000
+    },
+    "LaunchDataDownload": {
+        "description": "客户端「数据下载」弹窗（大版本更新后需下载追加数据，1.0.2 实测 52.07MB）：识别标题「数据下载」→ 点击 OK 开始下载，之后回入口循环等下载完成。",
+        "recognition": "TemplateMatch",
+        "template": "data_download.png",
+        "roi": [
+            540,
+            5,
+            240,
+            80
+        ],
+        "action": "Click",
+        "target": [
+            783,
+            655
+        ],
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 10000,
+        "post_delay": 3000
+    },
+    "LaunchTouch": {
+        "description": "【2026-10-02 补】登录奖励剧情页：角色在说话时屏幕下方有大字 TOUCH 提示 → 点屏幕下方中央推进（不要点 SKIP，那会跳掉整个登录奖励）。",
+        "recognition": "OCR",
+        "expected": "TOUCH",
+        "roi": [
+            700,
+            600,
+            300,
+            80
+        ],
+        "action": "Click",
+        "target": [
+            833,
+            643
+        ],
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
+    },
+    "LaunchNoticeClose": {
+        "description": "【2026-10-02 补】公告页左下「关闭」→ 回启动流程。（实测冷启动会依次遇到 登录奖励剧情 → 公告页）",
+        "recognition": "OCR",
+        "expected": "关闭",
+        "roi": [
+            560,
+            600,
+            200,
+            80
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
+    },
+    "LaunchClientApp": {
+        "description": "【启动客户端】StartApp 拉起游戏本体（enabled 默认 false，GUI 勾选后打开）。max_hit=1 只拉一次；拉完进 LaunchBootWait 等待加载。",
+        "recognition": "DirectHit",
+        "action": "StartApp",
+        "package": "com.bilibili.sirius.official",
+        "enabled": false,
+        "max_hit": 1,
+        "post_delay": 3000,
+        "next": [
+            "LaunchBootWait"
+        ],
+        "timeout": 5000
+    },
+    "LaunchBootWait": {
+        "description": "【冷启动等待循环】StartApp 后游戏要 30~90s 才加载到标题。Maa 的 timeout 不会让链等屏幕出现，所以用显式等待：每次 pre_delay 20s 再查一遍各弹窗，最多 6 拍（≈2 分钟）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "pre_delay": 20000,
+        "max_hit": 6,
+        "next": [
+            "LaunchTapToStart",
+            "LaunchTouch",
+            "LaunchSkipLoginBonus",
+            "LaunchNoticeClose",
+            "LaunchDateChange",
+            "LaunchHome",
+            "LaunchBootWait"
+        ],
+        "timeout": 3000
+    }
+}

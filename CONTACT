@@ -1,0 +1,17 @@
+| 平台 | 链接 |
+| :---: | :---: |
+| Github | [StarEnd-Corp/OurNotes-MAA](https://github.com/StarEnd-Corp/OurNotes-MAA) |
+| Github 用户 | [StarEnd-Corp](https://github.com/StarEnd-Corp) |
+| B站 | [星末StarEnd](https://space.bilibili.com/696298248) |
+| 博客 | [blog.starend.xyz](https://blog.starend.xyz) |
+| 个人站 | [starend.xyz](https://starend.xyz) |
+
+## 关于本项目
+
+《BanG Dream! Our Notes》的 MaaFramework 挂机助手。
+
+- 运行框架：[MaaFramework](https://github.com/MaaXYZ/MaaFramework) + [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)
+- 资源更新机制（海外源 + manifest 清单比对）见 README 的「资源检查 / 更新」章节。
+
+> ⚠️ 免责声明：脚本类自动化操作游戏可能违反游戏服务条款，存在账号风险。使用前请自行评估，
+> 作者不对任何账号损失负责。

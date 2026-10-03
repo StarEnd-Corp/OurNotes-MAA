@@ -1,0 +1,330 @@
+{
+    "PassStart": {
+        "description": "【领取通行证pt（每日）】入口。DirectHit。next 必须包含 PassClickCard（从主界面点 PASS 卡进页面）——⚠️ 2026-10-03 曾因清理幽灵节点时误删它，导致整条链静默跳过（一进就判红点结束）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "PassPopupOK",
+            "PassClickCard",
+            "PassOnPass",
+            "PassOnTasks",
+            "PassDone"
+        ],
+        "timeout": 30000,
+        "pre_delay": 500
+    },
+    "PassClickCard": {
+        "description": "主界面右侧 PASS 卡 logo：OCR 认卡面 PASS 字样（框架实测读作 IPASS，故用 .*PASS.*）。roi 放宽覆盖右侧整列，卡面会随主题/进度变化位置也能认到。",
+        "recognition": "OCR",
+        "expected": ".*PASS.*",
+        "roi": [
+            1150,
+            260,
+            130,
+            160
+        ],
+        "action": "Click",
+        "next": [
+            "PassPopupOK",
+            "PassOnPass"
+        ],
+        "timeout": 15000,
+        "post_delay": 3000
+    },
+    "PassOnPass": {
+        "description": "任务通行证页识别（OCR 标题「任务通行证」）→ 不点击，转去领取。",
+        "recognition": "OCR",
+        "expected": "任务通行证",
+        "roi": [
+            150,
+            10,
+            420,
+            70
+        ],
+        "action": "DoNothing",
+        "next": [
+            "PassClaimTop",
+            "PassClickTaskBtn"
+        ],
+        "timeout": 8000
+    },
+    "PassClaimTop": {
+        "description": "任务通行证页底部「一键领取」（等级奖励）。⚠️ 2026-10-02 三个坑一起踩：①框架把它读成**「键领取」**（丢「一」）→ expected 必须带上这个真实读数；②roi 若放宽到整片区域，会误匹配卡片上的「领取」文字 → 点击落空，什么都没领到；③按钮真实位置 1080p(1718,989)，肉眼估计偏了 100+px → 必须显式 target。  【2026-10-03】加 replace 纠错表：框架实测会把「一键领取」读成「键领取」（丢字），用替换表纠正，比在 expected 里堆备选写法更干净。",
+        "recognition": "OCR",
+        "expected": "一键领取|键领取",
+        "roi": [
+            1030,
+            600,
+            230,
+            95
+        ],
+        "action": "Click",
+        "max_hit": 8,
+        "next": [
+            "PassLevelOK"
+        ],
+        "on_error": [
+            "PassClickTaskBtn"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500,
+        "target": [
+            1145,
+            659
+        ],
+        "replace": [
+            [
+                "键领取",
+                "一键领取"
+            ],
+            [
+                "一键领取",
+                "一键领取"
+            ]
+        ]
+    },
+    "PassClickTaskBtn": {
+        "description": "【导航】点右上角「通行证任务」标签进入通行证任务页。【2026-10-03 修复】原 next 只有 [PassOnTasks]，实测在该页上再点一次此标签后那一屏没有「达成情况」→ next 全失败 → 整个任务 status=4000（这就是通行证任务失败的真因）。现在末尾补上该页专属的「关闭」(PassDailyClose)：是任务页就关掉往下走，不在任务页则自然不命中、不会误退。",
+        "recognition": "OCR",
+        "expected": "通行证任务",
+        "roi": [
+            1040,
+            0,
+            240,
+            100
+        ],
+        "action": "Click",
+        "next": [
+            "PassOnTasks",
+            "PassDailyClose"
+        ],
+        "timeout": 15000,
+        "post_delay": 3000
+    },
+    "PassOnTasks": {
+        "description": "【通行证任务页】OCR 认「达成情况」→ 去领。next 三条正路：①有可领 → PassClaimDaily；②本页领不到 → 切「常规」页 PassTabNormal；③都领完 → PassDailyClose 收尾。",
+        "recognition": "OCR",
+        "expected": "达成情况",
+        "roi": [
+            980,
+            90,
+            300,
+            60
+        ],
+        "action": "DoNothing",
+        "max_hit": 4,
+        "next": [
+            "PassClaimDaily",
+            "PassTabNormal",
+            "PassDailyClose"
+        ],
+        "timeout": 8000
+    },
+    "PassClaimDaily": {
+        "description": "通行证任务的「领取」/「一键领取」。⚠️ 2026-10-02 实测：①该页有「每日」「常规」两个标签，可领项可能只出现在**常规**页 → 扫不到要切页再扫；②roi 必须同时覆盖右侧行内「领取」和底部「一键领取」；③框架会把按钮读成「键领取」；④点击交给 OCR 框中心即可（两种按钮都在框上）。",
+        "recognition": "OCR",
+        "expected": "领取|一键领取|键领取",
+        "roi": [
+            745,
+            165,
+            535,
+            535
+        ],
+        "action": "Click",
+        "max_hit": 8,
+        "next": [
+            "PassDailyOK",
+            "PassTabNormal",
+            "PassDailyClose"
+        ],
+        "timeout": 6000,
+        "post_delay": 2000
+    },
+    "PassPopupOK": {
+        "description": "入口通用弹窗确认（只认 OK 文字）：点掉挡路的随机弹窗后才好识别页面。max_hit=6。",
+        "recognition": "OCR",
+        "expected": "OK",
+        "roi": [
+            300,
+            300,
+            700,
+            420
+        ],
+        "action": "Click",
+        "max_hit": 6,
+        "next": [
+            "PassPopupOK",
+            "PassClickCard",
+            "PassOnPass",
+            "PassDone"
+        ],
+        "timeout": 6000,
+        "post_delay": 2500
+    },
+    "PassDailyClose": {
+        "description": "通行证任务页左下「关闭」→ 退回通行证页，然后**推进到下一条轨道**（PassSlot2 / PassSlot3 各 max_hit=1，点过就不再命中，于是自然走到 PassClickHome 收尾——不必依赖变量或循环计数）。",
+        "recognition": "OCR",
+        "expected": "关闭",
+        "roi": [
+            380,
+            600,
+            240,
+            110
+        ],
+        "action": "Click",
+        "next": [
+            "PassSlot2",
+            "PassSlot3",
+            "PassClickHome"
+        ],
+        "timeout": 8000,
+        "post_delay": 2000
+    },
+    "PassClickHome": {
+        "description": "任务通行证页左上「主页」房子图标 → 回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "PassDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "PassDone": {
+        "description": "【回主界面】确认已回主界面（OCR 演出）。next：① 还有 PASS 红点 → PassBadgePresent → 回头补领；② 没红点 → PassFinish 正常收尾。两条正路并列，不靠 on_error。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [
+            "PassBadgePresent",
+            "PassFinish"
+        ],
+        "timeout": 10000
+    },
+    "PassSlot2": {
+        "description": "【轨道扫描②】点左侧栏第 2 张通行证卡（720p 目标 (185,233) ≈ 1080p (277,350)）。max_hit=1：只点一次。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            185,
+            233
+        ],
+        "max_hit": 1,
+        "next": [
+            "PassClaimTop"
+        ],
+        "post_delay": 3000
+    },
+    "PassSlot3": {
+        "description": "【轨道扫描③】点左侧栏第 3 张通行证卡（720p 目标 (185,340) ≈ 1080p (277,510)）。max_hit=1：只点一次。轨道更多时按同样模式加 PassSlot4…",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            185,
+            340
+        ],
+        "max_hit": 1,
+        "next": [
+            "PassClaimTop"
+        ],
+        "post_delay": 3000
+    },
+    "PassLevelOK": {
+        "description": "等级奖励领取弹窗的 OK（只认「OK」文字，roi 覆盖弹窗下半部；弹窗可能连弹多个 → 自循环）。点完 → 进该轨道的「通行证任务」。",
+        "recognition": "OCR",
+        "expected": "OK",
+        "roi": [
+            300,
+            300,
+            700,
+            420
+        ],
+        "action": "Click",
+        "max_hit": 8,
+        "next": [
+            "PassLevelOK",
+            "PassClickTaskBtn"
+        ],
+        "timeout": 6000,
+        "post_delay": 2500
+    },
+    "PassDailyOK": {
+        "description": "领奖弹窗确认：只认「OK」，点完回任务页继续扫（可能还有可领项）。",
+        "recognition": "OCR",
+        "expected": "OK",
+        "roi": [
+            300,
+            300,
+            700,
+            420
+        ],
+        "action": "Click",
+        "max_hit": 10,
+        "next": [
+            "PassDailyOK",
+            "PassOnTasks"
+        ],
+        "timeout": 6000,
+        "post_delay": 2200
+    },
+    "PassBadgePresent": {
+        "description": "【红点复核】主界面 PASS 图标右上角的红点角标（模板 pass_badge.png，24x24@720p）。命中=还有未领的通行证内容 → 回头重跑 PassStart 补领（max_hit=2 限次，避免死循环）。",
+        "recognition": "TemplateMatch",
+        "template": "pass_badge.png",
+        "roi": [
+            1225,
+            285,
+            60,
+            60
+        ],
+        "threshold": 0.8,
+        "action": "DoNothing",
+        "max_hit": 2,
+        "next": [
+            "PassStart"
+        ],
+        "timeout": 6000
+    },
+    "PassFinish": {
+        "description": "【终点】确认主界面无 PASS 红点（OCR 认底部导航「演出」）→ 任务成功结束。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000
+    },
+    "PassTabNormal": {
+        "description": "切到左侧「常规」标签（1080p (200,290) → 720p (133,193)）。仅切一次（max_hit=1），切完回 PassOnTasks 重新扫。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            133,
+            193
+        ],
+        "max_hit": 3,
+        "next": [
+            "PassOnTasks"
+        ],
+        "post_delay": 2500,
+        "timeout": 3000
+    }
+}

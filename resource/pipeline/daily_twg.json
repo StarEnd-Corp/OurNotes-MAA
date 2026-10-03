@@ -1,0 +1,641 @@
+{
+    "DailyTWG": {
+        "description": "【领取每日TWG card积分】入口。从主界面进入商店 → T.G.W CARD 页 → 领取每日积分 → 领每日奖励 → 回主界面。每日 23:00 重置；已领过时对应按钮消失/变灰，会自动跳过。",
+        "recognition": "DirectHit",
+        "next": [
+            "MaintenanceStop",
+            "TWGClickShop"
+        ],
+        "timeout": 60000,
+        "pre_delay": 500,
+        "post_delay": 1000
+    },
+    "TWGClickShop": {
+        "description": "主界面底部导航：点击「商店」。  【2026-10-02 改 OCR 认文字：主界面背景随主题/活动轮换，模板分数 0.99→0.63 会失配】  【2026-10-02：点击落在图标层(688,617)，实测文字标签 y=993 点不进商店】",
+        "recognition": "OCR",
+        "roi": [
+            640,
+            630,
+            120,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "TWGClickEntry"
+        ],
+        "timeout": 20000,
+        "post_delay": 2000,
+        "expected": "商店",
+        "target": [
+            688,
+            617
+        ]
+    },
+    "TWGClickEntry": {
+        "description": "商店左栏：点击「T.G.W」面板进入 T.G.W CARD 页。若积分已领(粉色标签不存在)则直接尝试领每日奖励，两者都没有就去返回主页。",
+        "recognition": "TemplateMatch",
+        "template": "tgw_panel.png",
+        "roi": [
+            5,
+            495,
+            225,
+            125
+        ],
+        "action": "Click",
+        "next": [
+            "TWGClaimPoints",
+            "TWGClaimDaily",
+            "TWGClickHome"
+        ],
+        "timeout": 20000,
+        "post_delay": 2500
+    },
+    "TWGClaimPoints": {
+        "description": "T.G.W CARD 页：「每日1次 领取积分」按钮。用粉色「每日1次」标签判断今日是否可领，点击按钮本体(固定坐标)。",
+        "recognition": "TemplateMatch",
+        "template": "daily_tag.png",
+        "roi": [
+            85,
+            605,
+            105,
+            52
+        ],
+        "action": "Click",
+        "target": [
+            139,
+            666
+        ],
+        "next": [
+            "TWGCloseReward",
+            "TWGClaimDaily",
+            "TWGClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 3000
+    },
+    "TWGCloseReward": {
+        "description": "「获得奖励（已获得 T.G.W CARD pt）」弹窗：点「关闭」。",
+        "recognition": "TemplateMatch",
+        "template": "dialog_close.png",
+        "roi": [
+            505,
+            540,
+            270,
+            63
+        ],
+        "action": "Click",
+        "next": [
+            "TWGClaimDaily",
+            "TWGClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 2000
+    },
+    "TWGClaimDaily": {
+        "description": "T.G.W CARD 页右下：领取每日奖励（小型LIVE BOOST饮料×1）。",
+        "recognition": "TemplateMatch",
+        "template": "claim_daily_btn.png",
+        "roi": [
+            875,
+            625,
+            285,
+            70
+        ],
+        "action": "Click",
+        "next": [
+            "TWGClickOK",
+            "TWGClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 3000
+    },
+    "TWGClickOK": {
+        "description": "「领取奖励（已领取以下道具）」弹窗：点 OK。",
+        "recognition": "TemplateMatch",
+        "template": "dialog_ok.png",
+        "roi": [
+            505,
+            628,
+            270,
+            64
+        ],
+        "action": "Click",
+        "next": [
+            "TWGClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 2000
+    },
+    "TWGClickHome": {
+        "description": "商店/T.G.W 页左上角「主页」房子图标：返回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "TWGDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "TWGDone": {
+        "description": "完成条件：回到主界面（识别到「演出」按钮）→ 不点击，任务成功结束。  【2026-10-02 改 OCR 认文字，抗主题轮换】",
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000,
+        "expected": "演出"
+    },
+    "TWGPoints": {
+        "description": "【领取TWG积分】独立任务入口：主界面 → 商店 → T.G.W CARD 页 → 领每日积分 → 关闭弹窗 → 回主页。已领过时按钮消失会自动跳过并直接返回主页（幂等）。",
+        "recognition": "DirectHit",
+        "next": [
+            "MaintenanceStop",
+            "PClickShop"
+        ],
+        "timeout": 60000,
+        "pre_delay": 500,
+        "post_delay": 1000
+    },
+    "PClickShop": {
+        "description": "主界面底部导航：点击「商店」。  【2026-10-02 改 OCR 认文字：主界面背景随主题/活动轮换，模板分数 0.99→0.63 会失配】  【2026-10-02：点击落在图标层(688,617)，实测文字标签 y=993 点不进商店】",
+        "recognition": "OCR",
+        "roi": [
+            640,
+            630,
+            120,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "PClickEntry"
+        ],
+        "timeout": 20000,
+        "post_delay": 2000,
+        "expected": "商店",
+        "target": [
+            688,
+            617
+        ]
+    },
+    "PClickEntry": {
+        "description": "商店左栏：点击「T.G.W」面板进入 T.G.W CARD 页。",
+        "recognition": "TemplateMatch",
+        "template": "tgw_panel.png",
+        "roi": [
+            5,
+            495,
+            225,
+            125
+        ],
+        "action": "Click",
+        "next": [
+            "PClaimPoints",
+            "PClickHome"
+        ],
+        "timeout": 20000,
+        "post_delay": 2500
+    },
+    "PClaimPoints": {
+        "description": "「领取积分」按钮（T.G.W 页）。链已并入每日奖励任务；该节点被两条链共用。",
+        "recognition": "TemplateMatch",
+        "template": "daily_tag.png",
+        "roi": [
+            85,
+            605,
+            105,
+            52
+        ],
+        "action": "Click",
+        "target": [
+            139,
+            666
+        ],
+        "next": [
+            "PLogPointReward",
+            "PCloseReward",
+            "DClaimDaily",
+            "DClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 3000
+    },
+    "PLogPointReward": {
+        "description": "【日志节点】用 OCR 读「获得奖励」弹窗（已获得 T.G.W CARD pt）的文字，读到的内容会被框架记进 debug/maafw.log，实现「领了什么奖励」可追溯。只识别不点击。⚠️ 弹窗 roi 待实机核对。",
+        "recognition": "OCR",
+        "expected": "T\\.G\\.W|pt|PT|积分|获得|奖励",
+        "roi": [
+            400,
+            300,
+            560,
+            240
+        ],
+        "action": "DoNothing",
+        "next": [
+            "PCloseReward",
+            "DClaimDaily",
+            "DClickHome"
+        ],
+        "timeout": 5000
+    },
+    "PCloseReward": {
+        "description": "「获得奖励」弹窗：点「关闭」。",
+        "recognition": "TemplateMatch",
+        "template": "dialog_close.png",
+        "roi": [
+            505,
+            540,
+            270,
+            63
+        ],
+        "action": "Click",
+        "next": [
+            "DClaimDaily",
+            "DClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 2000
+    },
+    "PClickHome": {
+        "description": "商店/T.G.W 页左上角「主页」房子图标：返回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "PDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "PDone": {
+        "description": "完成条件：回到主界面（识别到「演出」按钮）→ 不点击，任务成功结束。  【2026-10-02 改 OCR 认文字，抗主题轮换】",
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000,
+        "expected": "演出"
+    },
+    "TWGDaily": {
+        "description": "【TWG 积分 + 每日奖励】一次进商店全领：主界面→商店→T.G.W 页→领取积分→关弹窗→领取每日奖励→确认→回主页。2026-10-02 由两条链合并。",
+        "recognition": "DirectHit",
+        "next": [
+            "MaintenanceStop",
+            "DClickShop"
+        ],
+        "timeout": 60000,
+        "pre_delay": 500,
+        "post_delay": 1000
+    },
+    "DClickShop": {
+        "description": "主界面底部导航：点击「商店」。  【2026-10-02 改 OCR 认文字：主界面背景随主题/活动轮换，模板分数 0.99→0.63 会失配】  【2026-10-02：点击落在图标层(688,617)，实测文字标签 y=993 点不进商店】",
+        "recognition": "OCR",
+        "roi": [
+            640,
+            630,
+            120,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "DClickEntry"
+        ],
+        "timeout": 20000,
+        "post_delay": 2000,
+        "expected": "商店",
+        "target": [
+            688,
+            617
+        ]
+    },
+    "DClickEntry": {
+        "description": "T.G.W 面板入口 → 先领积分、再领每日奖励（2026-10-02 两条链合并，一次进商店全领完）。",
+        "recognition": "TemplateMatch",
+        "template": "tgw_panel.png",
+        "roi": [
+            5,
+            495,
+            225,
+            125
+        ],
+        "action": "Click",
+        "next": [
+            "PClaimPoints",
+            "PCloseReward",
+            "DClaimDaily",
+            "DClickHome"
+        ],
+        "timeout": 20000,
+        "post_delay": 2500
+    },
+    "DClaimDaily": {
+        "description": "T.G.W CARD 页右下：领取每日奖励（小型LIVE BOOST饮料×1）。",
+        "recognition": "TemplateMatch",
+        "template": "claim_daily_btn.png",
+        "roi": [
+            875,
+            625,
+            285,
+            70
+        ],
+        "action": "Click",
+        "next": [
+            "DLogDailyReward",
+            "DClickOK",
+            "DClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 3000
+    },
+    "DLogDailyReward": {
+        "description": "【日志节点】用 OCR 读「领取奖励」弹窗（已领取以下道具…）的文字，内容自动进 debug/maafw.log，实现「领了什么奖励」可追溯。只识别不点击。⚠️ 弹窗 roi 待实机核对。",
+        "recognition": "OCR",
+        "expected": "LIVE BOOST|饮料|道具|领取|获得|×|x[0-9]",
+        "roi": [
+            400,
+            300,
+            560,
+            240
+        ],
+        "action": "DoNothing",
+        "next": [
+            "DClickOK",
+            "DClickHome"
+        ],
+        "timeout": 5000
+    },
+    "DClickOK": {
+        "description": "「领取奖励」弹窗：点 OK。",
+        "recognition": "TemplateMatch",
+        "template": "dialog_ok.png",
+        "roi": [
+            505,
+            628,
+            270,
+            64
+        ],
+        "action": "Click",
+        "next": [
+            "DClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 2000
+    },
+    "DClickHome": {
+        "description": "商店/T.G.W 页左上角「主页」房子图标：返回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "DDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "DDone": {
+        "description": "完成条件：回到主界面（识别到「演出」按钮）→ 不点击，任务成功结束。  【2026-10-02 改 OCR 认文字，抗主题轮换】",
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000,
+        "expected": "演出"
+    },
+    "TWGLiveBonus": {
+        "description": "【领取商店每日火 Live Bonus】独立任务入口：主界面 → 商店 → 左栏「T.G.W CARD 专享商品目录」→ 滚到列表底部 → 领取「每日 Live Bonus」（小型LIVE BOOST饮料×1，免费）→ 确认 → 回主页。已领过时该项盖 SOLD OUT 章，则只记录不点击并直接返回（幂等，每日 23:00 重置）。",
+        "recognition": "DirectHit",
+        "next": [
+            "MaintenanceStop",
+            "SClickShop"
+        ],
+        "timeout": 60000,
+        "pre_delay": 500,
+        "post_delay": 1000
+    },
+    "SClickShop": {
+        "description": "主界面底部导航：点击「商店」。  【2026-10-02 改 OCR 认文字：主界面背景随主题/活动轮换，模板分数 0.99→0.63 会失配】  【2026-10-02：点击落在图标层(688,617)，实测文字标签 y=993 点不进商店】",
+        "recognition": "OCR",
+        "roi": [
+            640,
+            630,
+            120,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "SClickCatalog"
+        ],
+        "timeout": 20000,
+        "post_delay": 2000,
+        "expected": "商店",
+        "target": [
+            688,
+            617
+        ]
+    },
+    "SClickCatalog": {
+        "description": "商店左栏：点击「T.G.W CARD 专享商品目录」（OCR 识别文字，点击文字中心即按钮本体）。",
+        "recognition": "OCR",
+        "expected": "专享商品目录",
+        "roi": [
+            0,
+            240,
+            270,
+            140
+        ],
+        "action": "Click",
+        "next": [
+            "SScrollCatalog"
+        ],
+        "timeout": 20000,
+        "post_delay": 2500
+    },
+    "SScrollCatalog": {
+        "description": "把商品目录列表上滑翻到底（每日礼包固定在列表最后一张卡）。max_hit=8 有界。顺序：先试领取 → 再判已售罄（已加双条件，不会误命中）→ 否则继续滑。",
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            640,
+            620
+        ],
+        "end": [
+            640,
+            180
+        ],
+        "duration": 300,
+        "max_hit": 8,
+        "next": [
+            "SClaimLiveBonus",
+            "SLogSoldOut",
+            "SScrollCatalog"
+        ],
+        "on_error": [
+            "SClickHome"
+        ],
+        "timeout": 2500,
+        "post_delay": 700
+    },
+    "SLogSoldOut": {
+        "description": "【判定】每日礼包已领过 → 回主页收尾。【2026-10-03 修正】原来只有 TemplateMatch，而 soldout.png（SOLD OUT 圆形角标）在**普通商品页**上也会误命中（零点击探针实测 score=0.9871，归一化模板匹配容易被深色圆形+白字结构骗到），导致链路每次直接收尾、每日礼包从未被领取。现在改为 all_of 双条件：模板命中 **且** OCR 读出 SOLD/OUT 才算数。",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": "soldout.png",
+                                "roi": [
+                                    470,
+                                    395,
+                                    260,
+                                    220
+                                ],
+                                "threshold": 0.85
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "roi": [
+                                    470,
+                                    395,
+                                    260,
+                                    220
+                                ],
+                                "expected": "SOLD|OUT|sold|out",
+                                "only_rec": true
+                            }
+                        }
+                    }
+                ],
+                "box_index": 0
+            }
+        },
+        "action": "DoNothing",
+        "next": [
+            "SClickHome"
+        ],
+        "timeout": 4000
+    },
+    "SClaimLiveBonus": {
+        "description": "【商店·免费领取】商品卡**同时有两个操作**：上面是「购买」（付费，实测 2,500 星钻），下面是深色圆角按钮「免费」。【2026-10-03 重要修正】原 expected 写「购买|免費|免费」，OCR 会同时框住两个词并取分数最高的（实测 购买 0.999885 > 免费 0.999746）→ 结果点了付费按钮、既没领到东西还差点花掉星钻。现改为**只认「免费」**：既不误点付费，也不会误花资源。",
+        "recognition": "OCR",
+        "expected": "免费|免費",
+        "roi": [
+            530,
+            585,
+            220,
+            100
+        ],
+        "action": "Click",
+        "next": [
+            "SLogLiveBonus",
+            "SConfirm",
+            "SClickHome"
+        ],
+        "timeout": 5000,
+        "post_delay": 2500
+    },
+    "SLogLiveBonus": {
+        "description": "【日志节点】用 OCR 读领取弹窗文字（领到的东西会进 debug/maafw.log）。只识别不点击。⚠️ roi 待实机核对。",
+        "recognition": "OCR",
+        "expected": "LIVE BOOST|饮料|道具|获得|领取|×",
+        "roi": [
+            400,
+            300,
+            560,
+            240
+        ],
+        "action": "DoNothing",
+        "next": [
+            "SConfirm",
+            "SClickHome"
+        ],
+        "timeout": 5000
+    },
+    "SConfirm": {
+        "description": "领取/购买完成弹窗：点 OK。",
+        "recognition": "TemplateMatch",
+        "template": "dialog_ok.png",
+        "roi": [
+            505,
+            628,
+            270,
+            64
+        ],
+        "action": "Click",
+        "next": [
+            "SClickHome"
+        ],
+        "timeout": 12000,
+        "post_delay": 2000
+    },
+    "SClickHome": {
+        "description": "顶部「主页」房子图标：返回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "SDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "SDone": {
+        "description": "完成条件：回到主界面（识别到「演出」按钮）→ 不点击，任务成功结束。  【2026-10-02 改 OCR 认文字，抗主题轮换】",
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000,
+        "expected": "演出"
+    }
+}

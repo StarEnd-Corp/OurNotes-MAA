@@ -1,0 +1,163 @@
+{
+    "StudioStart": {
+        "description": "【领取录音室奖励】入口。主界面右侧「乐谱+三脚架」图标（录音室，1080p ≈(1843,770)）→「录音室练习」页 → 点「一键领取」收各乐队自动挂机(练习)奖励 → 关弹窗 → 点主页图标回主界面。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "StudioOnHome",
+            "StudioOnPage",
+            "StudioRewardTitle",
+            "StudioDone"
+        ],
+        "timeout": 30000,
+        "pre_delay": 500
+    },
+    "StudioOnHome": {
+        "description": "确认在主界面（OCR 底部导航「演出」）→ 再点录音室图标，避免跨屏盲点。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [
+            "StudioClickIcon"
+        ],
+        "timeout": 8000
+    },
+    "StudioClickIcon": {
+        "description": "主界面右侧录音室图标（谱架形状，HUD 图标无文字、位置固定）→ 固定 target (1229,513)@720p（=1080p(1843,770)）。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1229,
+            513
+        ],
+        "next": [
+            "StudioOnPage"
+        ],
+        "post_delay": 4000
+    },
+    "StudioOnPage": {
+        "description": "录音室练习页识别（OCR 标题「录音室」）→ 转去一键领取。",
+        "recognition": "OCR",
+        "expected": "录音室",
+        "roi": [
+            180,
+            15,
+            340,
+            60
+        ],
+        "action": "DoNothing",
+        "next": [
+            "StudioClaim"
+        ],
+        "timeout": 8000
+    },
+    "StudioClaim": {
+        "description": "录音室页右下「一键领取」。⚠️ 同 PASS 的坑：框架把「一键领取」读成「键领取」（丢「一」）→ expected 必须带上真实读数；按钮位置用实测值 1080p(1672,988)→720p(1115,659) 做显式 target，别用肉眼估值。领不到 → 直接走主页收尾。  【2026-10-03】加 replace 纠错表（同上：框架会把「一键领取」读成「键领取」）。",
+        "recognition": "OCR",
+        "expected": "一键领取|键领取",
+        "roi": [
+            960,
+            615,
+            320,
+            95
+        ],
+        "action": "Click",
+        "target": [
+            1115,
+            659
+        ],
+        "max_hit": 4,
+        "next": [
+            "StudioRewardTitle",
+            "StudioClickHome"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500,
+        "replace": [
+            [
+                "键领取",
+                "一键领取"
+            ]
+        ]
+    },
+    "StudioPopupOK": {
+        "description": "领取弹窗确认：只认「OK」，点完回去再点一次一键领取（可能分多批），最终由 StudioClaim 的 max_hit 用尽后落到主页收尾。",
+        "recognition": "OCR",
+        "expected": "OK",
+        "roi": [
+            300,
+            300,
+            700,
+            420
+        ],
+        "action": "Click",
+        "max_hit": 8,
+        "next": [
+            "StudioPopupOK",
+            "StudioRewardTitle",
+            "StudioClickHome"
+        ],
+        "timeout": 6000,
+        "post_delay": 2200
+    },
+    "StudioClickHome": {
+        "description": "录音室页左上角主页（房子）图标 → 回主界面。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "StudioDone"
+        ],
+        "timeout": 12000,
+        "post_delay": 2500
+    },
+    "StudioDone": {
+        "description": "完成条件：回到主界面（OCR 认底部导航「演出」）→ 不点击，任务成功结束。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000
+    },
+    "StudioRewardTitle": {
+        "description": "【奖励弹窗连点翻页】领奖后是**一串**\"点一下翻一页\"的弹窗：录音室练习奖励 → LEVEL UP(练习LV) → 再一个录音室练习奖励 …。这些页的确认按钮 OCR 读不出（读成 @}）；实测**点 1080p(960,860)→720p(640,573)** 必定关闭（试第一个点就成功）。注意：不要用 expected=OK 的节点去接（实测 OK|0K|Ok 会误命中 LEVEL UP 并点到面板中央，空转）。max_hit=10 防死循环。",
+        "recognition": "OCR",
+        "expected": "录音室练习奖励|获得奖励|LEVEL ?UP|练习LV",
+        "roi": [
+            40,
+            5,
+            900,
+            200
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            573
+        ],
+        "max_hit": 10,
+        "next": [
+            "StudioRewardTitle",
+            "StudioClickHome"
+        ],
+        "timeout": 6000,
+        "post_delay": 2500
+    }
+}

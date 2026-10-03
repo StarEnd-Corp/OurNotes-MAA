@@ -1,0 +1,150 @@
+{
+    "GiftStart": {
+        "description": "【领取礼物盒奖励】入口。主界面右侧**礼物盒图标**（1080p ≈(1846,195)，带红点数字）→「礼物盒」页 → 点「一键领取」领全部 → 关弹窗 → 关闭 → 回主页。模式同 missions/pass_pt：只认文字、roi 放宽、点击交给 OCR 框中心、循环有界。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "GiftPopupOK",
+            "GiftOnHome",
+            "GiftOnPage",
+            "GiftDone"
+        ],
+        "timeout": 30000,
+        "pre_delay": 500
+    },
+    "GiftOnHome": {
+        "description": "确认在主界面（OCR 底部导航「演出」）→ 再点礼物盒图标，避免跨屏盲点。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [
+            "GiftClickIcon"
+        ],
+        "timeout": 8000
+    },
+    "GiftClickIcon": {
+        "description": "主界面右侧礼物盒图标（HUD 图标无文字，位置固定，不受主题轮换影响）→ 固定目标 (1231,130)@720p。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1231,
+            130
+        ],
+        "next": [
+            "GiftOnPage"
+        ],
+        "post_delay": 3500
+    },
+    "GiftOnPage": {
+        "description": "礼物盒页识别（OCR 标题「礼物盒」）→ 转去一键领取。",
+        "recognition": "OCR",
+        "expected": "礼物盒",
+        "roi": [
+            100,
+            10,
+            400,
+            70
+        ],
+        "action": "DoNothing",
+        "next": [
+            "GiftClaim"
+        ],
+        "timeout": 8000
+    },
+    "GiftClaim": {
+        "description": "礼物盒页「一键领取」（一次通常领完列表全部，实测 9 件一次清空）。max_hit=3 允许重试几次；按钮灰掉时点击无效、无害。识别不到 → 关闭收尾。",
+        "recognition": "OCR",
+        "expected": "一键领取|键领取",
+        "roi": [
+            700,
+            615,
+            230,
+            90
+        ],
+        "action": "Click",
+        "max_hit": 3,
+        "next": [
+            "GiftPopupOK"
+        ],
+        "on_error": [
+            "GiftClose"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
+    },
+    "GiftPopupOK": {
+        "description": "领取弹窗确认：只认「OK」文字（弹窗内容/按钮位置随奖励条数变化），roi 覆盖弹窗下半部。max_hit=20（一次可能弹多个/逐条弹）；点完 → 回去再点一次一键领取（领干净），最终由 GiftClaim 的 max_hit 耗尽后落到 GiftClose。",
+        "recognition": "OCR",
+        "expected": "OK",
+        "roi": [
+            300,
+            300,
+            700,
+            420
+        ],
+        "action": "Click",
+        "max_hit": 20,
+        "next": [
+            "GiftPopupOK",
+            "GiftClaim",
+            "GiftClose"
+        ],
+        "timeout": 6000,
+        "post_delay": 2000
+    },
+    "GiftClose": {
+        "description": "礼物盒页左下「关闭」→ 关掉后多半已在主界面，故先试房子图标、再直接判主界面收尾。",
+        "recognition": "OCR",
+        "expected": "关闭",
+        "roi": [
+            380,
+            600,
+            240,
+            110
+        ],
+        "action": "Click",
+        "next": [
+            "GiftClickHome",
+            "GiftDone"
+        ],
+        "timeout": 8000,
+        "post_delay": 2000
+    },
+    "GiftClickHome": {
+        "description": "若该页有「主页」房子图标则点它（礼物盒页实测没有，属兜底）。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "GiftDone"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
+    },
+    "GiftDone": {
+        "description": "完成条件：回到主界面（OCR 认底部导航「演出」）→ 不点击，任务成功结束。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000
+    }
+}

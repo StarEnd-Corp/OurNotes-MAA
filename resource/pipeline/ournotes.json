@@ -1,0 +1,614 @@
+{
+    "GrindStart": {
+        "description": "【挂机打歌入口·任意屏接管】DirectHit：依次尝试 TAB TO START / 演出 / 选曲确定 / 结算推进 / 再次演出 / 弹窗关闭。2026-10-02 优化：原入口候选含 ClickLiveEntry(模板已漂移)，现全部页面的候选都补齐，从任意界面都能接上。",
+        "next": [
+            "GrindHelpModeDismiss",
+            "ClickPopupClose",
+            "ClickResultScreen",
+            "ClickStampClose",
+            "ClickNext",
+            "ClickRankUpOK",
+            "LogResult",
+            "ClickAgain",
+            "ClickStart",
+            "ClickStartOCR",
+            "ClickTapToStart",
+            "ClickLiveEntry",
+            "WaitResult",
+            "GrindStaminaOK",
+            "GrindStaminaLow"
+        ],
+        "timeout": 20000
+    },
+    "ClickTapToStart": {
+        "description": "启动页点击 TAP TO START 进入游戏。OCR 限定按钮文字区域，背景动画不影响。",
+        "recognition": "OCR",
+        "expected": "TAP TO START",
+        "action": "Click",
+        "next": [
+            "ClickLiveEntry"
+        ],
+        "timeout": 30000,
+        "roi": [
+            780,
+            540,
+            400,
+            120
+        ],
+        "post_delay": 2000
+    },
+    "ClickLiveEntry": {
+        "description": "主界面底部导航「演出」（2026-10-02 改 OCR：主界面背景随主题活动轮换，live_entry.png 掉到 0.47 会打死整条链）。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "Click",
+        "next": [
+            "ClickFreeLive"
+        ],
+        "timeout": 60000,
+        "post_delay": 1500
+    },
+    "ClickFreeLive": {
+        "description": "演出首页点击'自由演出 FREE LIVE'进入单人选歌。模板匹配 + roi，舞台动画不影响。  【2026-10-02】next 前置 GrindPickSong（可选曲目）→ 再「确定」。",
+        "recognition": "TemplateMatch",
+        "template": "free_live.png",
+        "action": "Click",
+        "next": [
+            "GrindPickSong",
+            "ClickStart"
+        ],
+        "timeout": 60000,
+        "roi": [
+            760,
+            300,
+            230,
+            130
+        ],
+        "post_delay": 1500
+    },
+    "ClickStart": {
+        "description": "选歌界面点击'确定'开始打歌（右下角静态按钮）。  【2026-10-02】next 前置体力判定：体力<3 时收尾停止（配合 GUI 开关「体力耗尽即停」）。",
+        "recognition": "TemplateMatch",
+        "template": "start_confirm.png",
+        "action": "Click",
+        "next": [
+            "GrindLBSet",
+            "GrindSwitchLight",
+            "GrindStaminaOK",
+            "GrindStaminaLow",
+            "ClickTutorialClose",
+            "ClickStartOCR"
+        ],
+        "timeout": 60000,
+        "roi": [
+            1080,
+            620,
+            160,
+            80
+        ],
+        "pre_delay": 500,
+        "post_delay": 800
+    },
+    "ClickTutorialClose": {
+        "description": "首次打歌的辅助模式教学弹窗：点击'关闭'。之后不再出现，作为兜底保留。",
+        "recognition": "TemplateMatch",
+        "template": "tutorial_close.png",
+        "action": "Click",
+        "next": [
+            "GrindLBSet",
+            "GrindSwitchLight",
+            "GrindStaminaOK",
+            "GrindStaminaLow",
+            "ClickTeamFlow"
+        ],
+        "timeout": 20000,
+        "roi": [
+            450,
+            620,
+            100,
+            60
+        ],
+        "post_delay": 800
+    },
+    "ClickTeamFlow": {
+        "description": "编队确认入口：已配队则直接 LIVE START；队伍空则先推荐编队。",
+        "next": [
+            "ClickLiveStart",
+            "ClickRecommendTeam"
+        ],
+        "timeout": 20000
+    },
+    "ClickRecommendTeam": {
+        "description": "队伍为空时点击'推荐编队'自动配队。",
+        "recognition": "TemplateMatch",
+        "template": "recommend_team.png",
+        "action": "Click",
+        "next": [
+            "ClickTeamOK"
+        ],
+        "timeout": 20000,
+        "roi": [
+            110,
+            510,
+            170,
+            90
+        ],
+        "post_delay": 1000
+    },
+    "ClickTeamOK": {
+        "description": "推荐编队面板点击 OK 确认，返回编队确认界面。",
+        "recognition": "TemplateMatch",
+        "template": "team_ok.png",
+        "action": "Click",
+        "next": [
+            "ClickTeamFlow"
+        ],
+        "timeout": 20000,
+        "roi": [
+            740,
+            620,
+            100,
+            60
+        ],
+        "post_delay": 1000
+    },
+    "ClickLiveStart": {
+        "description": "编队确认界面点击 LIVE START 开始演出，进入打歌。",
+        "recognition": "TemplateMatch",
+        "template": "live_start.png",
+        "action": "Click",
+        "next": [
+            "WaitResult"
+        ],
+        "timeout": 30000,
+        "roi": [
+            1020,
+            600,
+            240,
+            80
+        ],
+        "post_delay": 500
+    },
+    "WaitResult": {
+        "description": "【结算入口】等打歌结束。⚠️ next 顺序很关键：把具体处理器（ClickResultScreen 认 LIVE FINISH / ClickStampClose / ClickNext …）放前面，全屏无条件节点 ResultLoop 放**最后** —— 否则 ResultLoop 会挡住它们（探针实测：ResultLoop 的 box=[0,0,1280,720] 无条件命中）。",
+        "recognition": "DirectHit",
+        "next": [
+            "GrindHelpModeDismiss",
+            "GrindLiveUnstick",
+            "ClickPopupClose",
+            "ClickResultScreen",
+            "ClickStampClose",
+            "ClickNext",
+            "ClickRankUpOK",
+            "LogResult",
+            "ClickAgain",
+            "ClickStart",
+            "ClickStartOCR"
+        ],
+        "timeout": 360000
+    },
+    "ResultLoop": {
+        "description": "【结算推进】⚠️ 2026-10-03 实锤：next 里**必须**有 WaitResult 作兜底。事故：打歌开始时的 ♪ 开场图章让 ClickStampClose 命中 → 转到本节点 → 但本节点 next 全是结算类节点、在'打歌中'画面上无一匹配 → Maa 判「next 全失败 = 任务结束」→ 把正在打的那首歌抛下（失败现场截图证实当时是 LIVE SCORE 打歌画面）。waitResult 是 DirectHit 无条件命中，放在最后即可把'不认识的屏'拉回'等待打歌结束'。",
+        "recognition": "DirectHit",
+        "next": [
+            "ClickPopupClose",
+            "ClickResultScreen",
+            "ClickStampClose",
+            "ClickNext",
+            "ClickRankUpOK",
+            "LogResult",
+            "ClickAgain",
+            "ClickStart",
+            "ClickStartOCR",
+            "WaitResult"
+        ],
+        "timeout": 60000,
+        "max_hit": 999
+    },
+    "ClickResultScreen": {
+        "description": "LIVE FINISH 评级页（无按钮，点屏幕中央）。2026-10-02：expected 由 `LIVE FINISH` 改为 `.*FINISH.*` —— Maa 的 expected 是整段匹配，OCR 实测把标题读成 `EFINISH`，原写法必然失配。  【2026-10-03】加 post_wait_freezes=500：等画面静止再判定，避免过场动画期间的瞬时误判。",
+        "recognition": "OCR",
+        "expected": ".*FINISH.*",
+        "action": "Click",
+        "target": [
+            640,
+            360
+        ],
+        "next": [
+            "ResultLoop"
+        ],
+        "timeout": 15000,
+        "post_delay": 1500,
+        "post_wait_freezes": 500
+    },
+    "ClickStampClose": {
+        "description": "演出打卡页/达成奖励列表页的'关闭'按钮（底部中央）。",
+        "recognition": "TemplateMatch",
+        "template": "stamp_close.png",
+        "action": "Click",
+        "next": [
+            "ClickStampCloseOCR",
+            "ResultLoop"
+        ],
+        "timeout": 15000,
+        "roi": [
+            560,
+            610,
+            160,
+            80
+        ],
+        "post_delay": 1000
+    },
+    "ClickNext": {
+        "description": "结算页推进按钮（2026-10-02 改 OCR：文字有「下一步」和居中「OK」两种；且 next_btn.png 与编队页 LIVESTART 同位置会误配开歌）。",
+        "recognition": "OCR",
+        "expected": "下一.|OK",
+        "roi": [
+            600,
+            600,
+            700,
+            110
+        ],
+        "action": "Click",
+        "next": [
+            "ResultLoop"
+        ],
+        "timeout": 15000,
+        "post_delay": 1500
+    },
+    "ClickRankUpOK": {
+        "description": "RANK UP 升级弹窗（2026-10-02 改：rankup_ok.png 实测 0.446 已漂移）→ OCR 认出 RANK UP 后点居中 OK(640,520)。  【2026-10-03】加 post_wait_freezes=500：等画面静止再判定，避免过场动画期间的瞬时误判。",
+        "recognition": "OCR",
+        "expected": "RANK ?UP|RANKUP",
+        "roi": [
+            450,
+            200,
+            560,
+            120
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            520
+        ],
+        "next": [
+            "ResultLoop"
+        ],
+        "timeout": 15000,
+        "post_delay": 1500,
+        "post_wait_freezes": 500
+    },
+    "ClickStampCloseOCR": {
+        "description": "演出打卡「关闭」的 OCR 兜底（stamp_close.png 若漂移时生效）。",
+        "recognition": "OCR",
+        "expected": "关闭",
+        "roi": [
+            560,
+            610,
+            160,
+            80
+        ],
+        "action": "Click",
+        "next": [
+            "ResultLoop"
+        ],
+        "timeout": 8000,
+        "post_delay": 1200
+    },
+    "ClickStartOCR": {
+        "description": "选曲页「确定」的 OCR 兜底（start_confirm.png 若漂移时生效；OCR 可能把它读残，故用 确.. 宽松匹配）。",
+        "recognition": "OCR",
+        "expected": "确..",
+        "roi": [
+            1060,
+            615,
+            240,
+            85
+        ],
+        "action": "Click",
+        "next": [
+            "ClickTutorialClose",
+            "ClickTeamFlow"
+        ],
+        "timeout": 8000,
+        "post_delay": 1000
+    },
+    "ClickAgain": {
+        "description": "结算总结页「再次演出」→ 回选曲页继续下一轮（先经 GrindRoundWait 等待转场完成再判定）。",
+        "recognition": "OCR",
+        "expected": "再.演出|再次演出",
+        "roi": [
+            950,
+            620,
+            330,
+            110
+        ],
+        "action": "Click",
+        "next": [
+            "GrindRoundWait"
+        ],
+        "timeout": 10000,
+        "post_delay": 3000
+    },
+    "LogResult": {
+        "description": "【日志节点】结算总结页读「累计活动pt/挑战pt」等文字（只读不点），配合 ×N 倍率一起进 maafw.log。",
+        "recognition": "OCR",
+        "expected": "累计活动pt|挑战pt",
+        "roi": [
+            600,
+            150,
+            320,
+            280
+        ],
+        "action": "DoNothing",
+        "next": [
+            "ClickAgain"
+        ],
+        "timeout": 6000
+    },
+    "ClickPopupClose": {
+        "description": "通用新功能解锁弹窗（「XX功能解锁」）→ 点关闭。OCR 认标题再点固定坐标，不盲点。",
+        "recognition": "OCR",
+        "expected": ".*功能解锁.*",
+        "roi": [
+            480,
+            110,
+            640,
+            120
+        ],
+        "action": "Click",
+        "target": [
+            498,
+            571
+        ],
+        "next": [
+            "ResultLoop"
+        ],
+        "timeout": 8000,
+        "post_delay": 1500
+    },
+    "GrindStaminaOK": {
+        "description": "【体力够】编队页底部 🔥「体力 ▸ 预览」——roi 只框左边那个体力数字（避开 ▸ 与预览值，否则会粘成 2017 造成误判）。读到 >=3 → 继续打。",
+        "recognition": "OCR",
+        "expected": "[3-9]|[1-9][0-9]",
+        "roi": [
+            1106,
+            646,
+            34,
+            50
+        ],
+        "action": "DoNothing",
+        "next": [
+            "ClickTeamFlow"
+        ],
+        "timeout": 6000
+    },
+    "GrindStaminaLow": {
+        "description": "【体力耗尽】同一 roi：体力只剩 0/1/2 一位数 → 收尾回家停止挂机。与 GrindStaminaOK 同级并列（识别失败不会触发 on_error）。",
+        "recognition": "OCR",
+        "expected": "^[0-2]$",
+        "roi": [
+            1106,
+            646,
+            34,
+            50
+        ],
+        "action": "DoNothing",
+        "next": [
+            "GrindStopHome"
+        ],
+        "timeout": 6000
+    },
+    "GrindStopHome": {
+        "description": "【挂机收尾】体力耗尽 → 点主页图标回主界面结束（编队页有 house 图标，实测 0.98）。",
+        "recognition": "TemplateMatch",
+        "template": "home_icon.png",
+        "roi": [
+            110,
+            3,
+            85,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "GrindDone"
+        ],
+        "timeout": 15000,
+        "post_delay": 2500
+    },
+    "GrindDone": {
+        "description": "【终点】回到主界面（OCR 认「演出」）→ 挂机结束（体力耗尽停止）。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 10000
+    },
+    "GrindPickSong": {
+        "description": "【选曲】用封面模板匹配选中目标曲（《生存のあらすじ》/ Our Survival）。【2026-10-03 改动】原先用 OCR 认歌名，但歌名滚动且框架丢字，改为认封面。素材 song_our_survival.png 是 69x69、直接从游戏截图裁下的 —— 实测比用原画缩放可靠得多（裁自游戏：最佳 0.9215 / 次高 0.4776；原画缩放：0.7246 / 0.4506）。原画保留为 song_our_survival_art.png。threshold=0.70（实测：封面在屏上时 0.80~0.92、不在时仅 0.43~0.48，0.70 两侧都有余量）。roi 覆盖歌单左侧封面列；命中后点封面中心即选中该行。默认 enabled=false，GUI「曲目」下拉选歌后打开。",
+        "recognition": "TemplateMatch",
+        "template": "song_our_survival.png",
+        "threshold": 0.7,
+        "roi": [
+            170,
+            60,
+            460,
+            600
+        ],
+        "action": "Click",
+        "enabled": false,
+        "max_hit": 999,
+        "next": [
+            "ClickStart",
+            "ClickStartOCR"
+        ],
+        "timeout": 8000,
+        "post_delay": 1500
+    },
+    "GrindStopByCount": {
+        "description": "【收尾】达到 GUI 设定的「挂机次数」→ 点主页图标回主界面停止。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "GrindStopHome"
+        ],
+        "timeout": 3000
+    },
+    "GrindLBSet": {
+        "description": "【0火模式入口】默认 enabled=false。GUI 下拉「LIVE BOOST」选「🔥0（0火）」后由 pipeline_override 打开 → 进编队页点「消耗LB」开面板设 0 档。max_hit=1：只设一次（实测「再次演出」会保留档位）。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "enabled": false,
+        "max_hit": 1,
+        "next": [
+            "GrindLBClick"
+        ],
+        "timeout": 3000
+    },
+    "GrindLBClick": {
+        "description": "编队页底部「消耗LB」→ 打开 LIVE BOOST 消耗设置面板（复用 free_live 实测的 roi）。",
+        "recognition": "OCR",
+        "expected": "消耗L.",
+        "roi": [
+            860,
+            640,
+            180,
+            60
+        ],
+        "action": "Click",
+        "next": [
+            "GrindLBZero"
+        ],
+        "timeout": 6000,
+        "post_delay": 2200
+    },
+    "GrindLBZero": {
+        "description": "【0火】点面板最下面那档 🔥0。坐标来自 free_live 实测：🔥3 在 720p(637,122)，四档行距 85px(1080p) → 🔥0 = 720p (637,292)。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            637,
+            292
+        ],
+        "next": [
+            "GrindLBOK"
+        ],
+        "timeout": 4000,
+        "post_delay": 1500
+    },
+    "GrindLBOK": {
+        "description": "LB 面板「OK」确认 → 设成 0 档后继续走编队页的体力判定。",
+        "recognition": "OCR",
+        "expected": "OK|0K|Ok",
+        "roi": [
+            560,
+            630,
+            160,
+            70
+        ],
+        "action": "Click",
+        "next": [
+            "GrindSwitchLight",
+            "GrindStaminaOK",
+            "GrindStaminaLow",
+            "ClickTeamFlow"
+        ],
+        "timeout": 6000,
+        "post_delay": 2000
+    },
+    "GrindRoundWait": {
+        "description": "【轮间等待】点完「再次演出」后回选曲页有转场，等它出来再判定。⚠️ 2026-10-03 两次踩坑：①不留等待会误判「次数用尽」只刷一首；②给它设 max_hit=4 更糟 —— Maa 的 max_hit 是**跨轮累计**的，等于「只能刷 4 轮」。正解：**不设 max_hit**，靠 timeout 让框架反复重试 next 列表；始终等不到「确定」才走 on_error 收尾。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "pre_delay": 3000,
+        "timeout": 25000,
+        "next": [
+            "ClickStart",
+            "ClickStartOCR"
+        ],
+        "on_error": [
+            "GrindStopByCount"
+        ]
+    },
+    "GrindSwitchLight": {
+        "description": "【编队页·切轻量】点「Live2D」右侧的圆形双向箭头按钮（实测：按钮 1080p x600-672/y975-1047，中心 636,1011）。⚠️ 2026-10-03 教训：原 target 设在 Live2D 文字中心 492,1011 上 → 点不动（文字不可点，与底部导航同理）。OCR 仍以 Live2D 字样为守卫：切成功后文字变「轻量」→ 天然不命中 → 幂等。max_hit=3 避免空转。",
+        "recognition": "OCR",
+        "expected": "Live2D|Live2d|LIVE2D",
+        "roi": [
+            280,
+            640,
+            200,
+            60
+        ],
+        "action": "Click",
+        "target": [
+            424,
+            674
+        ],
+        "max_hit": 3,
+        "next": [
+            "GrindSwitchLight",
+            "GrindStaminaOK",
+            "GrindStaminaLow",
+            "ClickTeamFlow"
+        ],
+        "timeout": 5000,
+        "post_delay": 1500
+    },
+    "GrindHelpModeDismiss": {
+        "description": "【加载页·辅助模式弹窗】开演前的 NOW LOADING 加载页上会弹它，无按钮、需点一下。⚠️ 曾把 next 指向 ClickTeamFlow 而与该节点形成乒乓环 → 触发框架循环保护整轮中断（2026-10-03 实锤）。现在 next 只走 WaitResult，且 max_hit=3 自限；看门狗每轮重置任务，不存在跨轮累计。",
+        "recognition": "OCR",
+        "expected": ".*辅助模式.*|.*COMBO连击.*|.*更容易连.*",
+        "roi": [
+            280,
+            290,
+            740,
+            130
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            300
+        ],
+        "next": [
+            "WaitResult"
+        ],
+        "max_hit": 3,
+        "timeout": 6000,
+        "post_delay": 5000
+    },
+    "GrindLiveUnstick": {
+        "description": "【打歌卡死·自解】打歌停在 LIVESCORE 00000000 等输入（前台是游戏、无 ANR、无弹窗），手动点中央两下即恢复。⚠️ 两次踩坑：① next 若是 ClickStart/ClickStartOCR，在打歌屏全不匹配 → Maa 判定「next 全失败 = 任务结束」，反而把好端端的两轮弄成 4000；② next 若直接是 WaitResult 而不加间隔，会与 WaitResult 形成秒级乒乓被框架判成环。最终：next=[WaitResult] + post_delay 20 秒（拉开间隔）+ max_hit 6（最多尝试 2 分钟）。",
+        "recognition": "OCR",
+        "expected": "^0{6,}$",
+        "roi": [
+            50,
+            100,
+            200,
+            50
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            360
+        ],
+        "next": [
+            "WaitResult"
+        ],
+        "max_hit": 6,
+        "timeout": 4000,
+        "post_delay": 20000
+    }
+}

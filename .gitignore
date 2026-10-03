@@ -1,0 +1,57 @@
+# ============================================================
+#  OUR NOTES 挂机助手 —— Git 忽略规则
+#  原则：只收录「项目源码 + 识别资源」，一切运行产物 / GUI 框架本体 / 本地配置都不提交
+# ============================================================
+
+# ---------- 运行产物（体积巨大，绝不提交）----------
+# debug/ 是 MaaFramework 的调试输出，本机实测已达 7.8GB / 6.4 万个文件
+debug/
+logs/
+temp/
+backup/
+data/
+*.log
+
+# 本机私有配置目录（MFAAvalonia 的实例配置，含本机 adb 路径）
+config/
+
+# 本地资源清单缓存
+manifest_cache.json
+
+# ---------- 实测过程截图（含游戏画面与本机信息）----------
+screenshots/
+
+# ---------- MFAAvalonia GUI 本体（发行版自带，不是本项目源码）----------
+# 本项目只提供 resource/ + interface.json + tools/，GUI 请从 MaaFramework / MFAAvalonia 发行版获取
+MFAAvalonia*
+libloader.dll
+libs/
+runtimes/
+plugins/
+DependencySetup_*.bat
+appsettings.json
+resource/mfa_layout.json
+
+# ---------- Python / Node ----------
+__pycache__/
+*.pyc
+node_modules/
+
+# ---------- 本机私有配置（绝不提交）----------
+tools/config.local.js
+config.local.js
+
+# ---------- 本地临时脚本 ----------
+diag.js
+
+# ---------- setup_env.py 下载的依赖包（体积大，不入库）----------
+deps/
+
+# ---------- 打包用的原始 exe（改图标前的基准，保证打包可复现；来自上游发行版）----------
+tools/MFAAvalonia.pristine.exe
+
+# ---------- build_release.py 的默认输出目录 ----------
+release/
+
+# ---------- 内部工作文档（不对外发布）----------
+*对照与改进清单*.txt
