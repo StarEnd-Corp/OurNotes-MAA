@@ -12,6 +12,7 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
+            "LaunchStoryReveal",
             "LaunchStorySkip",
             "LaunchRewardOK",
             "LaunchHome",
@@ -144,15 +145,29 @@
         "timeout": 8000,
         "post_delay": 2500
     },
+    "LaunchStoryReveal": {
+        "description": "【剧情·叫出 UI】剧情界面的按钮会自动淡出隐藏。先在 ☰ 的位置(1202,102)@720p 轻点一下把 UI 浮出来，随后的 LaunchStoryMenu 才匹配得到。max_hit=4 防止在非剧情界面反复点。",
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1202,
+            102
+        ],
+        "max_hit": 4,
+        "next": [
+            "LaunchStorySkip"
+        ],
+        "post_delay": 800
+    },
     "LaunchStorySkip": {
-        "description": "【剧情页·菜单 SKIP】切号/首次进入会插入账号剧情。点右上角菜单(⋯)后菜单第一项是 SKIP；这里直接 OCR 认「SKIP」（@1080p 约 (1820,58)）。⚠️ 不用模板/颜色：SKIP 的底背景会变。",
+        "description": "【剧情页·菜单 SKIP】切号/首次进入会插入账号剧情。要先点右上角 ☰ 展开菜单（由 LaunchStoryReveal 负责），菜单第一项就是 SKIP，实测两次都在 (1802,269)@1080p=(1201,179)@720p。⚠️ 不用模板/颜色：SKIP 的底背景会变。",
         "recognition": "OCR",
         "expected": "SKIP|Skip|skip",
         "roi": [
             1150,
-            10,
-            170,
-            80
+            100,
+            180,
+            180
         ],
         "action": "Click",
         "next": [
@@ -236,6 +251,7 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
+            "LaunchStoryReveal",
             "LaunchStorySkip",
             "LaunchRewardOK",
             "LaunchHome",
