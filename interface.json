@@ -106,7 +106,7 @@
             "type": "switch",
             "label": "体力耗尽即停",
             "default_case": "Yes",
-            "description": "开(默认)=每首开演前判编队页体力，<3 时自动回主页停止挂机；关=一直挂下去不判体力。",
+            "description": "开(默认)=每首开演前判编队页体力，体力到 0 才自动回主页停止挂机（1 点体力也会继续打）；关=一直挂下去不判体力。",
             "cases": [
                 { "name": "Yes", "label": "是" },
                 { "name": "No", "label": "否", "pipeline_override": { "ClickStart": { "next": ["ClickTutorialClose", "ClickTeamFlow", "ClickStartOCR"] }, "ClickTutorialClose": { "next": ["ClickTeamFlow"] } } }
@@ -158,7 +158,7 @@
             ],
             "description": "从标题页推进到带「演出」的主界面：自动点 TAP TO START、处理登录奖励弹窗(SKIP)与每日23:00的日期变更弹窗；识别到「演出」按钮即完成。"
         },
-                {
+        {
             "name": "领取TWG积分＋每日奖励",
             "entry": "TWGDaily",
             "default_check": true,
@@ -195,6 +195,12 @@
             "description": "自动进入歌曲 → 打歌期间不按键 → 结算后重复。开关「体力耗尽即停」（默认开）：每首开演前判编队页体力，<3 时自动回主页停止。注意：请自行确认该玩法符合游戏服务条款，脚本类自动化存在账号风险。"
         },
         {
+            "name": "领取录音室奖励",
+            "entry": "StudioStart",
+            "default_check": true,
+            "description": "主界面右侧谱架图标（录音室）→「录音室练习」页 → 一键领取（收各乐队自动挂机/练习奖励）→ 关弹窗 → 主页回主界面。"
+        },
+        {
             "name": "领取通行证pt（每日）",
             "entry": "PassStart",
             "default_check": true,
@@ -211,12 +217,6 @@
             "entry": "GiftStart",
             "default_check": true,
             "description": "主界面右侧礼物盒图标 →「礼物盒」页（未领取列表）→ 一键领取（一次领完全部）→ 关弹窗 → 关闭 → 回主页。"
-        },
-        {
-            "name": "领取录音室奖励",
-            "entry": "StudioStart",
-            "default_check": true,
-            "description": "主界面右侧谱架图标（录音室）→「录音室练习」页 → 一键领取（收各乐队自动挂机/练习奖励）→ 关弹窗 → 主页回主界面。"
         }
     ]
 }

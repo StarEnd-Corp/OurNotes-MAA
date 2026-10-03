@@ -374,9 +374,9 @@
         "post_delay": 1500
     },
     "GrindStaminaOK": {
-        "description": "【体力够】编队页底部 🔥「体力 ▸ 预览」——roi 只框左边那个体力数字（避开 ▸ 与预览值，否则会粘成 2017 造成误判）。读到 >=3 → 继续打。",
+        "description": "【体力够】编队页底部 🔥「体力 ▸ 预览」——roi 只框左边那个体力数字（避开 ▸ 与预览值，否则会粘成 2017 造成误判）。读到 >=1 → 继续打（1 点体力也继续，配合 LIVE BOOST 0 火时不消耗体力）。",
         "recognition": "OCR",
-        "expected": "[3-9]|[1-9][0-9]",
+        "expected": "[1-9]|[1-9][0-9]",
         "roi": [
             1106,
             646,
@@ -390,9 +390,9 @@
         "timeout": 6000
     },
     "GrindStaminaLow": {
-        "description": "【体力耗尽】同一 roi：体力只剩 0/1/2 一位数 → 收尾回家停止挂机。与 GrindStaminaOK 同级并列（识别失败不会触发 on_error）。",
+        "description": "【体力耗尽】同一 roi：体力到 0 才收尾回家停止挂机（原来是 0/1/2 就停，0 火模式下体力不消耗，等于白白早停）。与 GrindStaminaOK 同级并列（识别失败不会触发 on_error）。",
         "recognition": "OCR",
-        "expected": "^[0-2]$",
+        "expected": "^0$",
         "roi": [
             1106,
             646,
