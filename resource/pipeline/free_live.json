@@ -3,6 +3,7 @@
         "description": "【自由演出（清体力）】入口。可从主界面/演出首页/歌曲选择页进入：点「演出」→ 点「自由演出 FREE LIVE」→ 进入选曲页后判定当前选中曲是否已解锁（未解锁会换到已解锁的曲）→ 点「确定」。后续（编队/跳过）待补。",
         "recognition": "DirectHit",
         "next": [
+            "LaunchDateChange",
             "MaintenanceStop",
             "FLPopupClose",
             "FLBondReward",

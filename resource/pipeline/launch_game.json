@@ -173,11 +173,11 @@
         "timeout": 5000
     },
     "LaunchBootWait": {
-        "description": "【冷启动等待循环】StartApp 后游戏要 30~90s 才加载到标题。Maa 的 timeout 不会让链等屏幕出现，所以用显式等待：每次 pre_delay 20s 再查一遍各弹窗，最多 6 拍（≈2 分钟）。",
+        "description": "【冷启动等待循环】StartApp 后游戏要 30~90s 才加载到标题。Maa 的 timeout 不会让链等屏幕出现，所以用显式等待：每次 pre_delay 20s 再查一遍各弹窗，最多 12 拍（≈4 分钟）。【2026-10-03】日期变更后游戏要重启+拉数据+过登录奖励，实测 148s 仍未到主界面，原 6 拍（120s）不够。",
         "recognition": "DirectHit",
         "action": "DoNothing",
         "pre_delay": 20000,
-        "max_hit": 6,
+        "max_hit": 12,
         "next": [
             "LaunchTapToStart",
             "LaunchTouch",

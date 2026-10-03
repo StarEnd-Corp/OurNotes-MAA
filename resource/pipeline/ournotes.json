@@ -2,6 +2,7 @@
     "GrindStart": {
         "description": "【挂机打歌入口·任意屏接管】DirectHit：依次尝试 TAB TO START / 演出 / 选曲确定 / 结算推进 / 再次演出 / 弹窗关闭。2026-10-02 优化：原入口候选含 ClickLiveEntry(模板已漂移)，现全部页面的候选都补齐，从任意界面都能接上。",
         "next": [
+            "LaunchDateChange",
             "GrindHelpModeDismiss",
             "ClickPopupClose",
             "ClickResultScreen",
