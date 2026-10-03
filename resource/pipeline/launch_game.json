@@ -12,7 +12,6 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
-            "LaunchStoryReveal",
             "LaunchStorySkip",
             "LaunchRewardOK",
             "LaunchHome",
@@ -34,6 +33,7 @@
         ],
         "action": "Click",
         "next": [
+            "LaunchStoryReveal",
             "LaunchGame"
         ],
         "timeout": 60000,
@@ -146,7 +146,7 @@
         "post_delay": 2500
     },
     "LaunchStoryReveal": {
-        "description": "【剧情·叫出 UI】剧情界面的按钮会自动淡出隐藏。先在 ☰ 的位置(1202,102)@720p 轻点一下把 UI 浮出来，随后的 LaunchStoryMenu 才匹配得到。max_hit=4 防止在非剧情界面反复点。",
+        "description": "【剧情·叫出 UI】剧情界面的按钮会自动淡出隐藏。先在 ☰ 的位置(1202,102)@720p 轻点一下把 UI 浮出来，随后 LaunchStorySkip 才能 OCR 到 SKIP。⚠️ 本节点是 DirectHit + 盲点，**只允许挂在 LaunchTapToStart.next**（剧情出现的必经点、且只走一次）；挂到 LaunchBootWait / LaunchGame 这类循环点会在画面失效时反复盲点（实测 40+ 次）。",
         "recognition": "DirectHit",
         "action": "Click",
         "target": [
@@ -251,7 +251,6 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
-            "LaunchStoryReveal",
             "LaunchStorySkip",
             "LaunchRewardOK",
             "LaunchHome",
