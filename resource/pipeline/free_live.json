@@ -3,6 +3,7 @@
         "description": "【自由演出（清体力）】入口。可从主界面/演出首页/歌曲选择页进入：点「演出」→ 点「自由演出 FREE LIVE」→ 进入选曲页后判定当前选中曲是否已解锁（未解锁会换到已解锁的曲）→ 点「确定」。后续（编队/跳过）待补。",
         "recognition": "DirectHit",
         "next": [
+            "LaunchStorySkip",
             "LaunchDateChange",
             "MaintenanceStop",
             "FLPopupClose",
@@ -372,11 +373,12 @@
         "post_delay": 1000
     },
     "FLBLowStamina": {
-        "description": "【日志】体力 < 最大档：不强行选最大，保持原有档位继续（日志里能看到本节点命中）。",
+        "description": "【收尾】火/体力 < 最大档（例如全消耗把火用光后掉到 0 火）：**停下来**，不再继续跳过。与编队页那条路的 FLStopLowStamina 保持一致。【2026-10-03 改】原来指向 FLBOK（照常继续），导致火不够时仍在跳过。",
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "FLBOK"
+            "FLRankUp",
+            "FLClickHomeEnd"
         ],
         "timeout": 3000
     },

@@ -302,6 +302,7 @@
         "description": "【TWG 积分 + 每日奖励】一次进商店全领：主界面→商店→T.G.W 页→领取积分→关弹窗→领取每日奖励→确认→回主页。2026-10-02 由两条链合并。",
         "recognition": "DirectHit",
         "next": [
+            "LaunchStorySkip",
             "LaunchDateChange",
             "MaintenanceStop",
             "DClickShop"
@@ -439,6 +440,7 @@
         "description": "【领取商店每日火 Live Bonus】独立任务入口：主界面 → 商店 → 左栏「T.G.W CARD 专享商品目录」→ 滚到列表底部 → 领取「每日 Live Bonus」（小型LIVE BOOST饮料×1，免费）→ 确认 → 回主页。已领过时该项盖 SOLD OUT 章，则只记录不点击并直接返回（幂等，每日 23:00 重置）。",
         "recognition": "DirectHit",
         "next": [
+            "LaunchStorySkip",
             "LaunchDateChange",
             "MaintenanceStop",
             "SClickShop"
