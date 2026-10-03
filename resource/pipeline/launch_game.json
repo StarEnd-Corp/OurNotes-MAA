@@ -162,16 +162,17 @@
     "LaunchStorySkip": {
         "description": "【剧情页·菜单 SKIP】切号/首次进入会插入账号剧情。要先点右上角 ☰ 展开菜单（由 LaunchStoryReveal 负责），菜单第一项就是 SKIP，实测两次都在 (1802,269)@1080p=(1201,179)@720p。⚠️ 不用模板/颜色：SKIP 的底背景会变。",
         "recognition": "OCR",
-        "expected": "SKIP|Skip|skip",
+        "expected": "SKIP|Skip|skip|跳过",
         "roi": [
-            1150,
-            100,
-            180,
-            180
+            1120,
+            5,
+            410,
+            300
         ],
         "action": "Click",
         "next": [
-            "LaunchStorySkipConfirm"
+            "LaunchStorySkipConfirm",
+            "LaunchGame"
         ],
         "timeout": 3000
     },
