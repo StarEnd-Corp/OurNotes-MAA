@@ -12,7 +12,7 @@
     "github": "https://github.com/StarEnden/OurNotes-MAA",
     "contact": "CONTACT",
     "license": "LICENSE",
-    "description": "针对《BanG Dream! Our Notes》的挂机流程骨架：自动进入歌曲并挂机到结算后重复。识别词与素材需按实际游戏界面调整，详见 README.md",
+    "description": "《BanG Dream! Our Notes》的自动化助手：挂机打歌、每日领奖（TWG / 商店 / 通行证 / 任务 / 礼物盒 / 录音室）、使用跳过进行演出、资源检查与更新。\n\n基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 与 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)，开源、完全免费，仅供学习交流使用。\n\n⚠️ 使用前请阅读顶部公告：**请勿在官方渠道提及或展示本工具，禁止售卖**。",
     "controller": [
         {
             "name": "Android",
