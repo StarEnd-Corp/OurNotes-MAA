@@ -12,6 +12,7 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
+            "LaunchStorySkip",
             "LaunchRewardOK",
             "LaunchHome",
             "LaunchBootWait"
@@ -143,6 +144,39 @@
         "timeout": 8000,
         "post_delay": 2500
     },
+    "LaunchStorySkip": {
+        "description": "【剧情页·菜单 SKIP】切号/首次进入会插入账号剧情。点右上角菜单(⋯)后菜单第一项是 SKIP；这里直接 OCR 认「SKIP」（@1080p 约 (1820,58)）。⚠️ 不用模板/颜色：SKIP 的底背景会变。",
+        "recognition": "OCR",
+        "expected": "SKIP|Skip|skip",
+        "roi": [
+            1150,
+            10,
+            170,
+            80
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchStorySkipConfirm"
+        ],
+        "timeout": 3000
+    },
+    "LaunchStorySkipConfirm": {
+        "description": "【剧情跳过·确认框】「要跳过故事吗？」→ 点右侧「跳过」（@1080p 约 (1134,800)）。注意菜单里那项是英文 SKIP，中文「跳过」只出现在这个确认框，不会误伤。",
+        "recognition": "OCR",
+        "expected": "跳过",
+        "roi": [
+            620,
+            470,
+            300,
+            140
+        ],
+        "action": "Click",
+        "next": [
+            "LaunchGame"
+        ],
+        "timeout": 3000,
+        "post_delay": 1500
+    },
     "LaunchRewardOK": {
         "description": "【获得奖励弹窗】登录奖励/剧情推进后弹出的「获得奖励 … 已获得 xxx」→ 点下方 OK 关掉。【2026-10-03 补】日期变更后实测流程会经过它（OK 在 1080p (961,988)），缺这个节点会一直卡住直到超时。",
         "recognition": "OCR",
@@ -202,6 +236,7 @@
             "LaunchSkipLoginBonus",
             "LaunchNoticeClose",
             "LaunchDateChange",
+            "LaunchStorySkip",
             "LaunchRewardOK",
             "LaunchHome",
             "LaunchBootWait"
