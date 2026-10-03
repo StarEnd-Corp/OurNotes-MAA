@@ -50,10 +50,13 @@
             "type": "select",
             "label": "LIVE BOOST",
             "default_case": "none",
-            "description": "挂机打歌用哪档 LIVE BOOST。默认「不设置」= 沿用游戏当前档位（会消耗火）。选「🔥0（0火）」= 开演前自动把档位设成 0，不消耗火，可长时间无限刷曲（单曲奖励较少）。",
+            "description": "挂机打歌每首歌消耗几档 LIVE BOOST（火）。「不设置」= 沿用游戏当前档位；「🔥0」= 开演前自动设成 0 档，不消耗火、可长时间无限刷曲（单曲奖励较少）；🔥1 / 🔥2 / 🔥3 = 每首固定消耗 1 / 2 / 3 档（档位越高单曲收益越高）。档位在编队页「消耗LB」面板里选，每轮开演前都会重新设一次。",
             "cases": [
                 { "name": "none", "label": "不设置", "pipeline_override": { "GrindLBSet": { "enabled": false } } },
-                { "name": "zero", "label": "🔥0（0火）", "pipeline_override": { "GrindLBSet": { "enabled": true } } }
+                { "name": "zero", "label": "🔥0（0火）", "pipeline_override": { "GrindLBSet": { "enabled": true }, "GrindLBPick": { "target": [637, 293] } } },
+                { "name": "one", "label": "🔥1（1火）", "pipeline_override": { "GrindLBSet": { "enabled": true }, "GrindLBPick": { "target": [637, 237] } } },
+                { "name": "two", "label": "🔥2（2火）", "pipeline_override": { "GrindLBSet": { "enabled": true }, "GrindLBPick": { "target": [637, 181] } } },
+                { "name": "three", "label": "🔥3（3火）", "pipeline_override": { "GrindLBSet": { "enabled": true }, "GrindLBPick": { "target": [637, 126] } } }
             ]
         },
         "挂机次数": {

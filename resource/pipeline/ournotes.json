@@ -489,18 +489,18 @@
         ],
         "action": "Click",
         "next": [
-            "GrindLBZero"
+            "GrindLBPick"
         ],
         "timeout": 6000,
         "post_delay": 2200
     },
-    "GrindLBZero": {
-        "description": "【0火】点面板最下面那档 🔥0。坐标来自 free_live 实测：🔥3 在 720p(637,122)，四档行距 85px(1080p) → 🔥0 = 720p (637,292)。",
+    "GrindLBPick": {
+        "description": "点 LIVE BOOST 面板里对应的档位行（默认 0 档，实际档位由 GUI「LIVE BOOST」下拉的 pipeline_override 改写 target）。720p 坐标取自 free_live 实机验证的同一面板：🔥3=(637,126) 🔥2=(637,181) 🔥1=(637,237) 🔥0=(637,293)，行距 85px(1080p)。",
         "recognition": "DirectHit",
         "action": "Click",
         "target": [
             637,
-            292
+            293
         ],
         "next": [
             "GrindLBOK"
