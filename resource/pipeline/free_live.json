@@ -342,7 +342,7 @@
     "FLBStaminaCheck": {
         "description": "【体力判定】OCR 读面板底部「体力 / 上限」里的体力值（左侧那个数，右侧是持有上限）。expected 为正则：匹配 >= 最大档(3) 的数 → 体力够，选最大消耗档；不匹配（体力 < 3）→ 走 on_error 只记录、保持当前档位。",
         "recognition": "OCR",
-        "expected": "[3-9]|[1-9][0-9]",
+        "expected": "[3-9]/|[1-9][0-9]/",
         "roi": [
             640,
             548,
@@ -603,7 +603,7 @@
     "FLStaminaTeamCheck": {
         "description": "【终止条件之一】OCR 读编队页体力值（消耗LB 那一行的左侧数字）。正则匹配 ≥3 → 体力够，继续；不匹配（体力 <3）→ 走 on_error 收尾。",
         "recognition": "OCR",
-        "expected": "[3-9]|[1-9][0-9]",
+        "expected": "[3-9]>|[1-9][0-9]>",
         "roi": [
             1075,
             650,

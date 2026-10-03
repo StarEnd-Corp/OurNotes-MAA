@@ -36,6 +36,26 @@
         }
     ],
     "option": {
+        "体力停止条件": {
+            "cases": [
+                {
+                    "name": "到体力小于最大消耗停下（推荐）",
+                    "pipeline_override": {}
+                },
+                {
+                    "name": "到体力为0时停下",
+                    "pipeline_override": {
+                        "FLBStaminaCheck": {
+                            "expected": "[1-9][0-9]*/"
+                        },
+                        "FLStaminaTeamCheck": {
+                            "expected": "[1-9][0-9]*>"
+                        }
+                    }
+                }
+            ],
+            "default_case": "到体力小于最大消耗停下（推荐）"
+        },
         "无限刷": {
             "type": "switch",
             "label": "无限刷",
@@ -175,6 +195,7 @@
             "entry": "FreeLiveStart",
             "default_check": false,
             "option": [
+                "体力停止条件",
                 "使用全消耗",
                 "跳过",
                 "消耗档位"
