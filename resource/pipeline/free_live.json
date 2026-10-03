@@ -623,7 +623,7 @@
     "FLStaminaTeamCheck": {
         "description": "【终止条件之一】OCR 读编队页体力值（消耗LB 那一行的左侧数字）。正则匹配 ≥3 → 体力够，继续；不匹配（体力 <3）→ 走 on_error 收尾。",
         "recognition": "OCR",
-        "expected": "[3-9]>|[1-9][0-9]>",
+        "expected": "[3-9]\\D|[1-9][0-9]\\D",
         "roi": [
             1075,
             650,

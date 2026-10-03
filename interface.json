@@ -52,7 +52,7 @@
                             "expected": "[1-9][0-9]*/"
                         },
                         "FLStaminaTeamCheck": {
-                            "expected": "[1-9][0-9]*>"
+                            "expected": "[1-9]\\D"
                         }
                     }
                 }
