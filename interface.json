@@ -243,6 +243,12 @@
             "entry": "GiftStart",
             "default_check": true,
             "description": "主界面右侧礼物盒图标 →「礼物盒」页（未领取列表）→ 一键领取（一次领完全部）→ 关弹窗 → 关闭 → 回主页。"
+        },
+        {
+            "name": "查看资源与消耗",
+            "entry": "ResourcePreview",
+            "default_check": false,
+            "description": "只读检查当前主界面的 Live Bonus/体力、金币、星石及相关次数；结果写入运行日志，不进入演出、不点击资源按钮、不消耗体力或道具。若要估算本次任务消耗，请结合任务选项中的次数、LIVE BOOST 档位和跳过档位人工核对。"
         }
     ]
 }

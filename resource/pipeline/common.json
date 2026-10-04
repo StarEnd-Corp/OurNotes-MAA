@@ -12,5 +12,60 @@
         "action": "StopTask",
         "next": [],
         "timeout": 10000
+    },
+    "HomeConfirm": {
+        "description": "【批量任务前置确认】只读确认当前位于主界面：识别底部导航「演出」，不点击、不改变游戏状态。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "HomeOnMain"
+        ],
+        "timeout": 5000
+    },
+    "HomeOnMain": {
+        "description": "【主界面特征】识别底部导航「演出」作为批量任务前置门禁；只读，不点击。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 5000
+    },
+    "ResourcePreview": {
+        "description": "【只读资源预览】读取主界面顶部资源与任务相关数字，结果写入 Maa 日志；不点击、不进入演出、不消耗资源。",
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "ResourcePreviewHome"
+        ],
+        "timeout": 5000
+    },
+    "ResourcePreviewHome": {
+        "description": "资源预览的主界面门禁：识别「演出」后读取全屏 OCR。",
+        "recognition": "OCR",
+        "expected": "演出",
+        "roi": [
+            1020,
+            620,
+            200,
+            75
+        ],
+        "action": "DoNothing",
+        "next": [
+            "ResourcePreviewOCR"
+        ],
+        "timeout": 5000
+    },
+    "ResourcePreviewOCR": {
+        "description": "【资源与消耗预览·只读】全屏 OCR：重点读取顶部 Live Bonus/体力、金币、星石及右侧券/次数数字；识别结果进入 debug/maafw.log。不会点击任何资源入口。",
+        "recognition": "OCR",
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 5000
     }
 }

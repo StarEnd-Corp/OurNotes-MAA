@@ -25,8 +25,8 @@ async function main() {
     if (b.status !== 3000) { console.error('资源加载失败 status=', b.status); process.exit(1); }
 
     const summary = [];
-    for (const entry of tasks) {
-        const t0 = Date.now();
+
+    async function runEntry(ctrl, res, entry) {
         const tskr = new maa.Tasker();
         const hits = [];
         tskr.add_context_sink((_, m) => {
@@ -35,8 +35,24 @@ async function main() {
         });
         tskr.controller = ctrl;
         tskr.resource = res;
+        const result = await tskr.post_task(entry).wait();
+        return { result, hits };
+    }
+
+    for (const entry of tasks) {
+        if (entry !== 'LaunchGame') {
+            console.log(`\n--- 确认主界面：${entry} ---`);
+            const gate = await runEntry(ctrl, res, 'HomeConfirm');
+            if (gate.result.status !== 3000) {
+                console.error(`❌ ${entry} 跳过：当前未确认在主界面（门禁 status=${gate.result.status}）`);
+                summary.push({ entry, status: 4000, skipped: true, reason: 'home_not_confirmed', hits: gate.hits.length, used: '0.0' });
+                continue;
+            }
+            console.log('  ✔ 已确认主界面（只读，无点击）');
+        }
+        const t0 = Date.now();
         console.log(`\n===== 任务 ${entry} =====`);
-        const r = await tskr.post_task(entry).wait();
+        const { result: r, hits } = await runEntry(ctrl, res, entry);
         const used = ((Date.now() - t0) / 1000).toFixed(1);
         hits.forEach((n, i) => console.log(`  ${String(i + 1).padStart(2)}. ${n}`));
         console.log(`  → status=${r.status} (${STATUS[r.status] || '?'}) 用时 ${used}s`);
