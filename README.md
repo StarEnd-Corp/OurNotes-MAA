@@ -54,7 +54,7 @@
 从 [Releases](../../releases) 下载最新版本的压缩包（`OurNotes-MAA-<版本>-win-x86_64.zip`），
 解压到任意目录即可。
 
-**本仓库不含任何本机路径或设备地址**。如果你用的是仓库源码而不是发行包，需要自己补齐依赖：
+如果你用的是仓库源码而不是发行包，需要自己补齐依赖：
 
 - **图形界面**：在 MFAAvalonia 的「设备连接」里选 adb 路径与 `127.0.0.1:<端口>`（会存到 `config/` 下）
 - **命令行脚本**（可选）：把 `tools/config.local.js.example` 复制成 `tools/config.local.js` 再填
