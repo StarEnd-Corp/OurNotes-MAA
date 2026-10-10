@@ -28,10 +28,29 @@
         "action": "Click",
         "next": [
             "PassPopupOK",
+            "PassClickSeasonBanner",
             "PassOnPass"
         ],
         "timeout": 15000,
         "post_delay": 3000
+    },
+    "PassClickSeasonBanner": {
+        "description": "PASS 页面左侧开服纪念·赛季任务·通行证横幅：进入对应赛季任务页面，再检查通行证任务红点。",
+        "recognition": "OCR",
+        "expected": "开服纪念|赛季任务|通行证",
+        "roi": [
+            0,
+            180,
+            270,
+            260
+        ],
+        "action": "Click",
+        "next": [
+            "PassOnPass",
+            "PassClickTaskBtn"
+        ],
+        "timeout": 8000,
+        "post_delay": 2500
     },
     "PassOnPass": {
         "description": "任务通行证页识别（OCR 标题「任务通行证」）→ 不点击，转去领取。",
@@ -336,18 +355,18 @@
         "post_delay": 2200
     },
     "PassBadgePresent": {
-        "description": "【红点复核】主界面 PASS 图标右上角的红点角标（模板 pass_badge.png，24x24@720p）。命中=还有未领的通行证内容 → 回头重跑 PassStart 补领（max_hit=2 限次，避免死循环）。",
+        "description": "【红点复核】主界面 PASS 图标右上角的紧裁红点角标。仅允许再补一轮，避免模板误命中导致重复重进。",
         "recognition": "TemplateMatch",
         "template": "pass_badge.png",
         "roi": [
-            1225,
-            285,
-            60,
-            60
+            1240,
+            300,
+            32,
+            32
         ],
-        "threshold": 0.8,
+        "threshold": 0.78,
         "action": "DoNothing",
-        "max_hit": 3,
+        "max_hit": 1,
         "next": [
             "PassStart"
         ],

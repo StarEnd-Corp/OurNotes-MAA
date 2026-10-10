@@ -43,12 +43,72 @@
         ],
         "action": "Click",
         "next": [
+            "TWGIntroGate",
             "TWGClaimPoints",
             "TWGClaimDaily",
             "TWGClickHome"
         ],
         "timeout": 20000,
         "post_delay": 2500
+    },
+    "TWGIntroGate": {
+        "description": "首次进入 T.G.W CARD 的三页介绍：识别标题后按顺序点两次下一步，最后关闭介绍。",
+        "recognition": "OCR",
+        "expected": "CARD",
+        "roi": [
+            300,
+            0,
+            680,
+            220
+        ],
+        "action": "DoNothing",
+        "next": [
+            "TWGIntroNext",
+            "TWGIntroClose",
+            "TWGClaimPoints",
+            "TWGClaimDaily",
+            "TWGClickHome"
+        ],
+        "timeout": 8000
+    },
+    "TWGIntroNext": {
+        "description": "T.G.W CARD 介绍页的下一步按钮，最多推进两页。",
+        "recognition": "OCR",
+        "expected": "下一步",
+        "roi": [
+            690,
+            620,
+            250,
+            65
+        ],
+        "action": "Click",
+        "max_hit": 2,
+        "next": [
+            "TWGIntroGate"
+        ],
+        "timeout": 5000,
+        "post_delay": 800
+    },
+    "TWGIntroClose": {
+        "description": "T.G.W CARD 介绍最后一页的关闭按钮。",
+        "recognition": "OCR",
+        "expected": "关闭",
+        "roi": [
+            345,
+            620,
+            220,
+            65
+        ],
+        "action": "Click",
+        "next": [
+            "PClaimPoints",
+            "PLogPointReward",
+            "PCloseReward",
+            "DClaimDaily",
+            "DClickHome"
+        ],
+        "timeout": 5000,
+        "post_delay": 1200
     },
     "TWGClaimPoints": {
         "description": "T.G.W CARD 页：「每日1次 领取积分」按钮。用粉色「每日1次」标签判断今日是否可领，点击按钮本体(固定坐标)。",
@@ -201,6 +261,7 @@
         ],
         "action": "Click",
         "next": [
+            "TWGIntroGate",
             "PClaimPoints",
             "PClickHome"
         ],

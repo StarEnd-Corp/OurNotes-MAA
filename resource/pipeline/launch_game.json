@@ -84,9 +84,24 @@
             75
         ],
         "action": "DoNothing",
-        "next": [],
+        "next": [
+            "LaunchLogRank"
+        ],
         "timeout": 5000,
         "expected": "演出"
+    },
+    "LaunchLogRank": {
+        "description": "【日志节点】主界面左上角玩家等级。OCR 结果写入 debug/maafw.log，用于判断录音室等等级解锁条件；只读不点击。",
+        "recognition": "OCR",
+        "roi": [
+            0,
+            0,
+            220,
+            90
+        ],
+        "action": "DoNothing",
+        "next": [],
+        "timeout": 5000
     },
     "LogDataDownloadSize": {
         "description": "【日志节点】把「数据下载」弹窗的下载大小写进 MAA 日志：本节点用 OCR 识别该数值区，识别到的文字会被框架记入 debug/maafw.log 的 recognition result（text 字段）。不点击，随后交给 LaunchDataDownload 点 OK。",
