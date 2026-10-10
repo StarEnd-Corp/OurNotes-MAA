@@ -5,8 +5,8 @@
     "name": "OurNotesAuto",
     "label": "OUR NOTES 挂机助手",
     "icon": "logo.ico",
-    "title": "OUR NOTES 挂机助手 v0.1.6",
-    "version": "0.1.6",
+    "title": "OUR NOTES 挂机助手 v0.1.7",
+    "version": "0.1.7",
 
     // ↓↓↓ 资源更新/检查用：github = 海外源地址，资源检查工具会读这里取最新版本号
     "github": "https://github.com/StarEnden/OurNotes-MAA",
